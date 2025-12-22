@@ -33,6 +33,7 @@
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" alt="Swagger" width="45" height="45"/>
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/supabase/supabase-original.svg" alt="Supabase" width="45" height="45"/> 
   <img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/render.svg" alt="Render" width="45" height="45"/>
+  <img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/railway.svg" alt="Railway" width="45" height="45"/>
 </p>
 
 
