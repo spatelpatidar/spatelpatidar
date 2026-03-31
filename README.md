@@ -87,7 +87,7 @@
 
 | Gem | Description | Status |
 |-----|-------------|--------|
-| [respondo](https://github.com/spatelpatidar/respondo) | Standardized API response formatting for Rails — clean, consistent JSON responses. | 🚧 Built · Not published |
+| [respondo](https://rubygems.org/gems/respondo) | Standardized API response formatting for Rails — clean, consistent JSON responses. | ✅ Published |
 | [param_guard](https://github.com/spatelpatidar/param_guard) | Strong parameter validation and sanitization layer for Rails controllers. | 🚧 Built · Not published |
 | authify | JWT & session-based authentication solution for Rails APIs. | 📄 Documented · In development |
 
