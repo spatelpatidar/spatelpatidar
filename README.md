@@ -82,14 +82,17 @@
 | [swift_field](https://pub.dev/packages/swift_field) | Production-grade Flutter form widgets — text fields, password fields, searchable dropdowns & gradient buttons. Zero dependencies. | Dart | ✅ Published |
 
 ---
+| Gem | Description | Language | Status |
+|-----|-------------|----------|--------|
+| [respondo](https://rubygems.org/gems/respondo) | Respondo standardizes JSON API responses across Rails applications. Every response gets success, data, message, and meta fields. | Ruby | ✅ Published |
+---
 
 ### 🔨 In Progress — Ruby Gems
 
-| Gem | Description | Status |
-|-----|-------------|--------|
-| [respondo](https://rubygems.org/gems/respondo) | Standardized API response formatting for Rails — clean, consistent JSON responses. | ✅ Published |
-| [param_guard](https://github.com/spatelpatidar/param_guard) | Strong parameter validation and sanitization layer for Rails controllers. | 🚧 Built · Not published |
-| authify | JWT & session-based authentication solution for Rails APIs. | 📄 Documented · In development |
+| Gem | Description | Language | Status |
+|-----|-------------|----------|--------|
+| [param_guard](https://github.com/spatelpatidar/param_guard) | Strong parameter validation and sanitization layer for Rails controllers. | Ruby | 🚧 Built · Not published |
+| authify | JWT & session-based authentication solution for Rails APIs. | Ruby | 📄 Documented · In development |
 
 ---
 
