@@ -32,18 +32,18 @@
 <p align="left">
   <a href="https://github.com/spatelpatidar" target="blank">
     <img align="center"
-      src="https://cdn.simpleicons.org/github/444444"
-      alt="spatelpatidar" height="30" width="40" />
+      src="https://skillicons.dev/icons?i=github"
+      alt="spatelpatidar" height="50" width="50" />
   </a>
   <a href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="blank">
     <img align="center"
-      src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg"
-      alt="shailendra-kumar-07s" height="30" width="40" />
+      src="https://skillicons.dev/icons?i=linkedin"
+      alt="shailendra-kumar-07s" height="50" width="50" />
   </a>
   <a href="mailto:shailendrapatidar00@gmail.com" target="blank">
     <img align="center"
-      src="https://cdn.simpleicons.org/gmail/EA4335"
-      alt="Gmail" height="30" width="40" />
+      src="https://skillicons.dev/icons?i=gmail"
+      alt="Gmail" height="50" width="50" />
   </a>
 </p>
 
