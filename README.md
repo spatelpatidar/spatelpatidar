@@ -32,7 +32,7 @@
 <p align="left">
   <a href="https://github.com/spatelpatidar" target="blank">
     <img align="center"
-      src="https://cdn.simpleicons.org/github/000000/ffffff"
+      src="https://cdn.simpleicons.org/github/444444"
       alt="spatelpatidar" height="30" width="40" />
   </a>
   <a href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="blank">
