@@ -15,8 +15,10 @@
 
 ### 👨‍💻 About Me
 
-- 🔭 I'm a **Backend Developer** with **2+ years of experience** in Ruby on Rails
+- 🔭 I'm a **Backend Developer** with **2.5+ years of experience** in Ruby on Rails
 - 🌱 I'm currently learning **Flutter, Rust, GraphQL, Go**
+- 📦 Published [**respondo**](https://rubygems.org/gems/respondo) on rubygems.org — 350+ downloads organically, zero promotion
+- 🚀 Just launched [**auditron**](https://rubygems.org/gems/auditron) — Auditron tracks who changed what on any ActiveRecord model
 - 📦 Published [**app_snackbar**](https://pub.dev/packages/app_snackbar) on pub.dev — 300+ downloads organically, zero promotion
 - 🚀 Just launched [**swift_field**](https://pub.dev/packages/swift_field) — production-grade Flutter form widgets with zero dependencies
 - 💬 Ask me about **Ruby on Rails, REST APIs, PostgreSQL, Firebase**
@@ -29,13 +31,19 @@
 
 <p align="left">
   <a href="https://github.com/spatelpatidar" target="blank">
-    <img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/github.svg" alt="spatelpatidar" height="30" width="40" />
+    <img align="center"
+      src="https://cdn.simpleicons.org/github/000000/ffffff"
+      alt="spatelpatidar" height="30" width="40" />
   </a>
   <a href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="blank">
-    <img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg" alt="shailendra-kumar-07s" height="30" width="40" />
+    <img align="center"
+      src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/linked-in-alt.svg"
+      alt="shailendra-kumar-07s" height="30" width="40" />
   </a>
   <a href="mailto:shailendrapatidar00@gmail.com" target="blank">
-    <img align="center" src="https://cdn.simpleicons.org/gmail/EA4335" alt="Gmail" height="30" width="40" />
+    <img align="center"
+      src="https://cdn.simpleicons.org/gmail/EA4335"
+      alt="Gmail" height="30" width="40" />
   </a>
 </p>
 
@@ -76,22 +84,24 @@
 
 ### 📦 Published Packages
 
-| Package | Description | Language | Status |
-|---------|-------------|----------|--------|
-| [app_snackbar](https://pub.dev/packages/app_snackbar) | Lightweight Flutter snackbar utility for clean, customizable in-app notifications. | Dart | ✅ Published |
-| [swift_field](https://pub.dev/packages/swift_field) | Production-grade Flutter form widgets — text fields, password fields, searchable dropdowns & gradient buttons. Zero dependencies. | Dart | ✅ Published |
+| Package | Description | Language | Status | Download |
+|---------|-------------|----------|--------|--------|
+| [app_snackbar](https://pub.dev/packages/app_snackbar) | Lightweight Flutter snackbar utility for clean, customizable in-app notifications. | Dart | ✅ Published | ![count](https://img.shields.io/pub/dm/app_snackbar?label=Downloads&style=social) |
+| [swift_field](https://pub.dev/packages/swift_field) | Production-grade Flutter form widgets — text fields, password fields, searchable dropdowns & gradient buttons. Zero dependencies. | Dart | ✅ Published | ![count](https://img.shields.io/pub/dm/swift_field?label=Downloads&style=social) |
 
 ---
-| Gem | Description | Language | Status |
-|-----|-------------|----------|--------|
-| [respondo](https://rubygems.org/gems/respondo) | Respondo standardizes JSON API responses across Rails applications. Every response gets success, data, message, and meta fields. | Ruby | ✅ Published |
+| Gem | Description | Language | Status | Downloads |
+|-----|-------------|----------|--------|--------|
+| [respondo](https://rubygems.org/gems/respondo) | Respondo standardizes JSON API responses across Rails applications. Every response gets success, data, message, and meta fields. | Ruby | ✅ Published | ![count](https://img.shields.io/gem/dt/respondo?label=Downloads&style=social) |
+| [auditron](https://rubygems.org/gems/auditron) | Auditron tracks who changed what on any ActiveRecord model — storing only the fields that changed, not full snapshots. | Ruby | ✅ Published | ![count](https://img.shields.io/gem/dt/auditron?label=Downloads&style=social) |
 ---
 
 ### 🔨 In Progress — Ruby Gems
 
 | Gem | Description | Language | Status |
 |-----|-------------|----------|--------|
-| [param_guard](https://github.com/spatelpatidar/param_guard) | Strong parameter validation and sanitization layer for Rails controllers. | Ruby | 🚧 Built · Not published |
+| [idempo](https://github.com/spatelpatidar/idempo) | Idempo provides opt-in idempotency handling for Rails controllers, ActiveJob classes, and webhook handlers. | Ruby | 🚧 Built · Not published |
+| [param_guard](https://github.com/spatelpatidar/param_guard) | Strong parameter validation and sanitization layer for Rails controllers. | Ruby | 🚧 Builting · Not published |
 | authify | JWT & session-based authentication solution for Rails APIs. | Ruby | 📄 Documented · In development |
 
 ---
