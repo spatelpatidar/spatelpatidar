@@ -90,10 +90,14 @@
 | [swift_field](https://pub.dev/packages/swift_field) | Production-grade Flutter form widgets — text fields, password fields, searchable dropdowns & gradient buttons. Zero dependencies. | Dart | ✅ Published | ![count](https://img.shields.io/pub/dm/swift_field?label=Downloads&style=social) |
 
 ---
+
+### 📦 Published Ruby Gems
+
 | Gem | Description | Language | Status | Downloads |
 |-----|-------------|----------|--------|--------|
 | [respondo](https://rubygems.org/gems/respondo) | Respondo standardizes JSON API responses across Rails applications. Every response gets success, data, message, and meta fields. | Ruby | ✅ Published | ![count](https://img.shields.io/gem/dt/respondo?label=Downloads&style=social) |
 | [auditron](https://rubygems.org/gems/auditron) | Auditron tracks who changed what on any ActiveRecord model — storing only the fields that changed, not full snapshots. | Ruby | ✅ Published | ![count](https://img.shields.io/gem/dt/auditron?label=Downloads&style=social) |
+
 ---
 
 ### 🔨 In Progress — Ruby Gems
