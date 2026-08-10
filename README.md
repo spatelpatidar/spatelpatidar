@@ -110,7 +110,7 @@
 
 ---
 
-### 📊 GitHub Stats
+### 📊 GitHub Stats & Graphs
 
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=spatelpatidar&show_icons=true&theme=tokyonight&hide_border=true&locale=en" alt="spatelpatidar" />
@@ -125,3 +125,37 @@
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=spatelpatidar&langs_count=10&theme=tokyonight&hide_border=true&layout=compact&custom_title=Top%20Languages" alt="Top Languages" />
 </p>
+
+
+---
+### 🐍 Snake
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-dark.svg#gh-dark-mode-only" alt="snake dark mode" />
+  <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-light.svg#gh-light-mode-only" alt="snake light mode" />
+</p>
+
+---
+### 📫 Let's Connect
+
+<p align="left">
+  <a href="https://github.com/spatelpatidar" target="blank">
+    <img align="center"
+      src="https://skillicons.dev/icons?i=github"
+      alt="spatelpatidar" height="50" width="50" />
+  </a>
+  <a href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="blank">
+    <img align="center"
+      src="https://skillicons.dev/icons?i=linkedin"
+      alt="shailendra-kumar-07s" height="50" width="50" />
+  </a>
+  <a href="mailto:shailendrapatidar00@gmail.com" target="blank">
+    <img align="center"
+      src="https://skillicons.dev/icons?i=gmail"
+      alt="Gmail" height="50" width="50" />
+  </a>
+</p>
+
+---
+
+<h3 align="center">⭐️ Always learning, always building. 💗</h3>
