@@ -113,7 +113,11 @@
 ### 📊 GitHub Stats & Graphs
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=spatelpatidar&show_icons=true&theme=tokyonight&hide_border=true&locale=en" alt="spatelpatidar" />
+  <img src="github-readme-stats-eight-flame.vercel.app/api?username=spatelpatidar&show_icons=true&theme=tokyonight&hide_border=true&locale=en" alt="spatelpatidar" />
+</p>
+
+<p align="center">
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=spatelpatidar&theme=tokyo-night&hide_border=true&area=true&custom_title=Contribution%20Graph%20%F0%9F%93%97" alt="spatelpatidar contribution graph" width="90%" />
 </p>
 
 <p align="center">
@@ -123,7 +127,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=spatelpatidar&langs_count=10&theme=tokyonight&hide_border=true&layout=compact&custom_title=Top%20Languages" alt="Top Languages" />
+  <img src="github-readme-stats-eight-flame.vercel.app/api/top-langs/?username=spatelpatidar&langs_count=10&theme=tokyonight&hide_border=true&layout=compact&custom_title=Top%20Languages" alt="Top Languages" />
 </p>
 
 
@@ -158,4 +162,4 @@
 
 ---
 
-<h3 align="center">⭐️ Always learning, always building. 💗</h3>
+<h3 align="center">⭐️ Always learning, always building. ❤️</h3>
