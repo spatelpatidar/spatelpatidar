@@ -113,7 +113,7 @@
 ### 📊 GitHub Stats & Graphs
 
 <p align="center">
-  <img src="github-readme-stats-eight-flame.vercel.app/api?username=spatelpatidar&show_icons=true&theme=tokyonight&hide_border=true&locale=en" alt="spatelpatidar" />
+  <img src="https://github-readme-stats-eight-flame.vercel.app/api?username=spatelpatidar&show_icons=true&theme=tokyonight&hide_border=true&locale=en" alt="spatelpatidar" />
 </p>
 
 <p align="center">
@@ -127,7 +127,7 @@
 </p>
 
 <p align="center">
-  <img src="github-readme-stats-eight-flame.vercel.app/api/top-langs/?username=spatelpatidar&langs_count=10&theme=tokyonight&hide_border=true&layout=compact&custom_title=Top%20Languages" alt="Top Languages" />
+  <img src="https://github-readme-stats-eight-flame.vercel.app/api/top-langs/?username=spatelpatidar&langs_count=10&theme=tokyonight&hide_border=true&layout=compact&custom_title=Top%20Languages" alt="Top Languages" />
 </p>
 
 
