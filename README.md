@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="https://github.com/ryo-ma/github-profile-trophy">
-    <img src="https://githubprofiletrophy-silk.vercel.app/?username=spatelpatidar&theme=onedark&row=2&column=3&no-frame=true" alt="spatelpatidar" />
+    <img src="https://github-trophies.devomb.com/?username=spatelpatidar&theme=onedark&row=2&column=3&no-frame=true" alt="spatelpatidar" />
   </a>
 </p>
 
