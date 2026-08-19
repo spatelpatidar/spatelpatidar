@@ -62,7 +62,7 @@
 ### ⚙️ Tools & Technology
 
 <p align="left">
-  <img src="https://skillicons.dev/icons?i=git,github,gitlab,postgres,mysql,sqlite,redis,docker,linux,vscode,postman,firebase,supabase,graphql" />
+  <img src="https://skillicons.dev/icons?i=git,github,gitlab,postgres,mysql,sqlite,redis,docker,linux,vscode,postman,firebase,supabase,graphql,cloudflare" />
 </p>
 <p align="left">
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" alt="Swagger" width="45" height="45"/>
@@ -117,7 +117,7 @@
 </p>
 
 <p align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=spatelpatidar&theme=tokyo-night&hide_border=true&area=true&custom_title=Contribution%20Graph%20%F0%9F%93%97" alt="spatelpatidar contribution graph" width="90%" />
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=spatelpatidar&theme=tokyo-night&hide_border=true&area=true&custom_title=Shailendra%20Kumar's%20Contribution%20Graph%20%F0%9F%93%97" alt="spatelpatidar contribution graph" width="90%" />
 </p>
 
 <p align="center">
