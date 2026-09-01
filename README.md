@@ -173,7 +173,10 @@
 <br/>
 <img src="https://streak-stats.demolab.com/?user=spatelpatidar&hide_border=true&background=0d001a&ring=38bdf8&fire=f97316&currStreakLabel=38bdf8&sideLabels=a855f7&dates=e9d5ff&currStreakNum=ffffff&sideNums=ffffff&border_radius=16" height="250"/>
 <br/>
-<img src="https://github-readme-activity-graph.vercel.app/graph?username=spatelpatidar&bg_color=0d001a&color=38bdf8&line=a855f7&point=ff6fd8&area=true&hide_border=true&border_radius=16&custom_title=Shailendra's+Contribution+Graph" width="95%"/>
+<!-- <img src="https://github-readme-activity-graph.vercel.app/graph?username=spatelpatidar&bg_color=0d001a&color=38bdf8&line=a855f7&point=ff6fd8&area=true&hide_border=true&border_radius=16&custom_title=Shailendra's+Contribution+Graph" width="95%"/> -->
+
+<img src="https://arshbibhaw-github-activity-graph.vercel.app/graph?username=spatelpatidar&bg_color=0d001a&color=38bdf8&line=a855f7&point=ff6fd8&area=true&hide_border=true&border_radius=16&custom_title=Shailendra's+Contribution+Graph" width="95%"/>
+
 <br/>
 <img src="https://github-trophies.devomb.com/?username=spatelpatidar&theme=tokyonight&row=2&column=3&no-frame=true" width="60%"/>
 
