@@ -1,0 +1,49 @@
+name: Generate Profile Assets
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  generate-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate 3D contribution graph
+        uses: yoshi389111/github-profile-3d-contrib@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: spatelpatidar
+
+      - name: Generate snake game
+        uses: Platane/snk@v3
+        with:
+          github_user_name: spatelpatidar
+          outputs: |
+            dist/github-snake-dark.svg?palette=github-dark
+            dist/github-snake-light.svg?palette=github-light
+
+      - name: Consolidate build assets
+        run: |
+          mkdir -p output_assets
+          # Move snake assets
+          cp -r dist/* output_assets/
+          # Move 3D contribution assets
+          cp -r profile-3d-contrib output_assets/
+
+      - name: Deploy all assets to output branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: output
+          publish_dir: output_assets
+          keep_files: false
