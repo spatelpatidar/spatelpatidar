@@ -166,6 +166,7 @@
 
 <br/>
 
+<img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/main/profile-3d-contrib/profile-night-rainbow.svg" width="94%" alt="3D contribution graph" />
 <img src="https://github-readme-stats-eight-flame.vercel.app/api?username=spatelpatidar&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d001a&title_color=38bdf8&icon_color=a855f7&text_color=e9d5ff&border_radius=16" height="250"/>
 &nbsp;&nbsp;
 <br/>
