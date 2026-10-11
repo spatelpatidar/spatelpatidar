@@ -22,12 +22,12 @@
 
 <br/>
 
-&nbsp;&nbsp;🔭 &nbsp;**Backend Developer** with **2.5+ years** in Ruby on Rails  
+&nbsp;&nbsp;🔭 &nbsp;**Backend Developer** with **3+ years** in Ruby on Rails  
 &nbsp;&nbsp;🌱 &nbsp;Currently learning **Flutter, Rust, GraphQL, Go**  
-&nbsp;&nbsp;📦 &nbsp;Published [**respondo**](https://rubygems.org/gems/respondo) — 350+ organic downloads on RubyGems  
-&nbsp;&nbsp;🚀 &nbsp;Just launched [**auditron**](https://rubygems.org/gems/auditron) — tracks who changed what on any ActiveRecord model  
+&nbsp;&nbsp;📦 &nbsp;Published [**respondo**](https://rubygems.org/gems/respondo) — 1400+ organic downloads on RubyGems  
+&nbsp;&nbsp;🚀 &nbsp;Published [**auditron**](https://rubygems.org/gems/auditron) — tracks who changed what on any ActiveRecord model and 400+ downloads
 &nbsp;&nbsp;📦 &nbsp;Published [**app_snackbar**](https://pub.dev/packages/app_snackbar) — 300+ organic downloads on pub.dev  
-&nbsp;&nbsp;🚀 &nbsp;Just launched [**swift_field**](https://pub.dev/packages/swift_field) — zero-dependency Flutter form widgets  
+&nbsp;&nbsp;🚀 &nbsp;Published [**swift_field**](https://pub.dev/packages/swift_field) — zero-dependency Flutter form widgets, Pin fields, dropdown with search, 
 &nbsp;&nbsp;💬 &nbsp;Ask me about **Ruby on Rails, REST APIs, PostgreSQL, Firebase**  
 
 <br/>
@@ -211,3 +211,13 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff6fd8,25:a855f7,50:6366f1,75:38bdf8,100:34d399&height=120&section=footer&text=always%20learning%2C%20always%20building%20♥&fontSize=20&fontColor=ffffff&animation=fadeIn" width="100%"/>
 
 </div>
+<details>
+  <summary><h4>💻 Click here to See ⬇️</h4></summary>
+    <a href="https://github.com/spatelpatidar">
+       <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&gap=0.6&scale=2&flatten=2&animation=wave&animation_duration=4&animation_delay=0.06&animation_amplitude=24&animation_frequency=0.1&animation_wave_center=0_3&format=svg&weeks=52&theme=native&dark=true">
+        <source media="(prefers-color-scheme: light)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&gap=0.6&scale=2&flatten=2&animation=wave&animation_duration=4&animation_delay=0.06&animation_amplitude=24&animation_frequency=0.1&animation_wave_center=0_3&format=svg&weeks=52&theme=native">
+        <img alt="" src="[https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&flatten=1&weeks=40&animation=wave&format=svg&gap=0.6&animation_frequency=0.2&animation_amplitude=20&theme=pink](https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&gap=0.6&scale=2&flatten=2&animation=wave&animation_duration=4&animation_delay=0.06&animation_amplitude=24&animation_frequency=0.1&animation_wave_center=0_3&format=svg&weeks=52&theme=native)">
+      </picture>
+    </a>
+</details>
