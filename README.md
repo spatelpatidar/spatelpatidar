@@ -4,7 +4,7 @@
 
 <br/>
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=38BDF8&center=true&vCenter=true&width=650&lines=Building+clean+Rails+APIs+%F0%9F%9A%80;Shipping+gems+%26+pub.dev+packages+%F0%9F%93%A6;Exploring+Flutter%2C+Rust+%26+Go+%F0%9F%94%A5;Test-driven%2C+performance-obsessed+%E2%9A%A1;2.5%2B+years+of+backend+craft+%F0%9F%92%99)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=38BDF8&center=true&vCenter=true&width=650&lines=Building+clean+Rails+APIs+%F0%9F%9A%80;Shipping+gems+%26+pub.dev+packages+%F0%9F%93%A6;Exploring+Flutter%2C+Rust+%26+Go+%F0%9F%94%A5;Test-driven%2C+performance-obsessed+%E2%9A%A1;3%2B+years+of+backend+craft+%F0%9F%92%99)](https://git.io/typing-svg)
 
 </div>
 
@@ -25,6 +25,7 @@
 &nbsp;&nbsp;🔭 &nbsp;**Backend Developer** with **3+ years** in Ruby on Rails  
 &nbsp;&nbsp;🌱 &nbsp;Currently learning **Flutter, Rust, GraphQL, Go**  
 &nbsp;&nbsp;📦 &nbsp;Published [**respondo**](https://rubygems.org/gems/respondo) — 1400+ organic downloads on RubyGems  
+&nbsp;&nbsp;📦 &nbsp;Published [**respondo-graphql**](https://rubygems.org/gems/respondo-graphql) — 600+ organic downloads on RubyGems  
 &nbsp;&nbsp;🚀 &nbsp;Published [**auditron**](https://rubygems.org/gems/auditron) — tracks who changed what on any ActiveRecord model and 400+ downloads
 &nbsp;&nbsp;📦 &nbsp;Published [**app_snackbar**](https://pub.dev/packages/app_snackbar) — 300+ organic downloads on pub.dev  
 &nbsp;&nbsp;🚀 &nbsp;Published [**swift_field**](https://pub.dev/packages/swift_field) — zero-dependency Flutter form widgets, Pin fields, dropdown with search, 
@@ -138,6 +139,7 @@
 | Package | Description | Language | Status | Downloads |
 |---------|-------------|----------|--------|-----------|
 | [respondo](https://rubygems.org/gems/respondo) | Standardizes JSON API responses across Rails apps — success, data, message & meta fields. | Ruby | ✅ Published | ![count](https://img.shields.io/gem/dt/respondo?label=Downloads&style=social) |
+| [respondo-graphql](https://rubygems.org/gems/respondo-graphql) | Consistent GraphQL-spec responses for Rails controllers — data, errors, extensions. | Ruby | ✅ Published | ![count](https://img.shields.io/gem/dt/respondo-graphql?label=Downloads&style=social) |
 | [auditron](https://rubygems.org/gems/auditron) | Tracks who changed what on any ActiveRecord model — storing only changed fields, not full snapshots. | Ruby | ✅ Published | ![count](https://img.shields.io/gem/dt/auditron?label=Downloads&style=social) |
 | [app_snackbar](https://pub.dev/packages/app_snackbar) | Lightweight Flutter snackbar utility for clean, customizable in-app notifications. | Dart | ✅ Published | ![count](https://img.shields.io/pub/dm/app_snackbar?label=Downloads&style=social) |
 | [swift_field](https://pub.dev/packages/swift_field) | Production-grade Flutter form widgets — text fields, password fields, searchable dropdowns & gradient buttons. Zero dependencies. | Dart | ✅ Published | ![count](https://img.shields.io/pub/dm/swift_field?label=Downloads&style=social) |
