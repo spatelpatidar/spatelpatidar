@@ -75,7 +75,7 @@ jobs:
           plugin_achievements_secrets: no
           plugin_achievements_display: compact
           plugin_achievements_limit: 10
-          plugin_errors_fatal: yes
+          plugins_errors_fatal: yes
 
       - name: Metrics - WakaTime
         uses: lowlighter/metrics@latest
@@ -121,7 +121,7 @@ jobs:
           plugin_habits_days: 14
           plugin_habits_facts: no
           plugin_habits_charts: no
-          plugin_errors_fatal: yes
+          plugins_errors_fatal: yes
       # ================= NEW METRICS BELOW =================
 
       - name: Metrics - Lines of code (NEW)
@@ -189,7 +189,7 @@ jobs:
           plugin_people: yes
           plugin_people_types: followers, following
 
-      - name: Metrics - Repositories showcase (NEW)
+      - name: Metrics - Pinned repositories
         uses: lowlighter/metrics@latest
         continue-on-error: true
         with:
@@ -199,8 +199,8 @@ jobs:
           filename: metrics.plugin.pinned.svg
           output_action: none
           base: ""
-          plugin_pinned: yes
-          plugin_pinned_limit: 6
+          plugin_repositories: yes
+          plugin_repositories_pinned: 6
 
       # ================= END NEW METRICS =================
 
