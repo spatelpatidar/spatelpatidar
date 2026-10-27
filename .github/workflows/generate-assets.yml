@@ -57,11 +57,12 @@ jobs:
           base: ""
           plugin_languages: yes
           plugin_languages_sections: most-used
-          plugin_languages_limit: 8
+          plugin_languages_limit: 10
           plugin_languages_colors: github
 
       - name: Metrics - Achievements
         uses: lowlighter/metrics@latest
+        continue-on-error: true
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: spatelpatidar
@@ -71,9 +72,10 @@ jobs:
           base: ""
           plugin_achievements: yes
           plugin_achievements_threshold: C
-          plugin_achievements_secrets: yes
+          plugin_achievements_secrets: no
           plugin_achievements_display: compact
-          plugin_achievements_limit: 0
+          plugin_achievements_limit: 10
+          plugin_errors_fatal: yes
 
       - name: Metrics - WakaTime
         uses: lowlighter/metrics@latest
@@ -87,9 +89,10 @@ jobs:
           base: ""
           plugin_wakatime: yes
           plugin_wakatime_token: ${{ secrets.WAKATIME_TOKEN }}
-          plugin_wakatime_user: YOUR_WAKATIME_USERNAME
+          plugin_wakatime_user: current
           plugin_wakatime_sections: time, projects, projects-graphs, languages, editors
           plugin_wakatime_days: 7
+          plugin_errors_fatal: yes
 
       - name: Metrics - Commit calendar
         uses: lowlighter/metrics@latest
@@ -105,6 +108,7 @@ jobs:
 
       - name: Metrics - Coding habits
         uses: lowlighter/metrics@latest
+        continue-on-error: true
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: spatelpatidar
@@ -113,8 +117,11 @@ jobs:
           output_action: none
           base: ""
           plugin_habits: yes
-          plugin_habits_charts: yes
+          plugin_habits_from: 100
           plugin_habits_days: 14
+          plugin_habits_facts: no
+          plugin_habits_charts: no
+          plugin_errors_fatal: yes
 
       # ================= NEW METRICS BELOW =================
 
@@ -182,19 +189,6 @@ jobs:
           base: ""
           plugin_people: yes
           plugin_people_types: followers, following
-
-      - name: Metrics - LeetCode (NEW)
-        uses: lowlighter/metrics@latest
-        continue-on-error: true
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          user: spatelpatidar
-          template: classic
-          filename: metrics.plugin.leetcode.svg
-          output_action: none
-          base: ""
-          plugin_leetcode: yes
-          plugin_leetcode_user: YOUR_LEETCODE_USERNAME
 
       - name: Metrics - Repositories showcase (NEW)
         uses: lowlighter/metrics@latest
