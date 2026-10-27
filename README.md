@@ -25,7 +25,6 @@
 &nbsp;&nbsp;🔭 &nbsp;**Backend Developer** with **3+ years** in Ruby on Rails  
 &nbsp;&nbsp;🌱 &nbsp;Currently learning **Flutter, Rust, GraphQL, Go**  
 &nbsp;&nbsp;📦 &nbsp;Published [**respondo**](https://rubygems.org/gems/respondo) — 1400+ organic downloads on RubyGems  
-&nbsp;&nbsp;📦 &nbsp;Published [**respondo-graphql**](https://rubygems.org/gems/respondo-graphql) — 600+ organic downloads on RubyGems  
 &nbsp;&nbsp;🚀 &nbsp;Published [**auditron**](https://rubygems.org/gems/auditron) — tracks who changed what on any ActiveRecord model and 400+ downloads
 &nbsp;&nbsp;📦 &nbsp;Published [**app_snackbar**](https://pub.dev/packages/app_snackbar) — 300+ organic downloads on pub.dev  
 &nbsp;&nbsp;🚀 &nbsp;Published [**swift_field**](https://pub.dev/packages/swift_field) — zero-dependency Flutter form widgets, Pin fields, dropdown with search, 
