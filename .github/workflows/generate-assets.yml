@@ -18,12 +18,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ---------- 3D contribution graph ----------
       - name: Generate 3D contribution graph
         uses: yoshi389111/github-profile-3d-contrib@latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           USERNAME: spatelpatidar
 
+      # ---------- Snake ----------
       - name: Generate snake game
         uses: Platane/snk@v3
         with:
@@ -32,13 +34,208 @@ jobs:
             dist/github-snake-dark.svg?palette=github-dark
             dist/github-snake-light.svg?palette=github-light
 
+      # ---------- Metrics (rendered to disk, NOT committed) ----------
+      - name: Metrics - GitHub stats
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: github-metrics.svg
+          output_action: none
+          base: header, activity, community, repositories, metadata
+          config_timezone: Asia/Kolkata
+
+      - name: Metrics - Languages
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.languages.svg
+          output_action: none
+          base: ""
+          plugin_languages: yes
+          plugin_languages_sections: most-used
+          plugin_languages_limit: 8
+          plugin_languages_colors: github
+
+      - name: Metrics - Achievements
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.achievements.svg
+          output_action: none
+          base: ""
+          plugin_achievements: yes
+          plugin_achievements_threshold: C
+          plugin_achievements_secrets: yes
+          plugin_achievements_display: compact
+          plugin_achievements_limit: 0
+
+      - name: Metrics - WakaTime
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.wakatime.svg
+          output_action: none
+          base: ""
+          plugin_wakatime: yes
+          plugin_wakatime_token: ${{ secrets.WAKATIME_TOKEN }}
+          plugin_wakatime_user: YOUR_WAKATIME_USERNAME
+          plugin_wakatime_sections: time, projects, projects-graphs, languages, editors
+          plugin_wakatime_days: 7
+
+      - name: Metrics - Commit calendar
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.isocalendar.fullyear.svg
+          output_action: none
+          base: ""
+          plugin_isocalendar: yes
+          plugin_isocalendar_duration: full-year
+
+      - name: Metrics - Coding habits
+        uses: lowlighter/metrics@latest
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.habits.charts.svg
+          output_action: none
+          base: ""
+          plugin_habits: yes
+          plugin_habits_charts: yes
+          plugin_habits_days: 14
+
+      # ================= NEW METRICS BELOW =================
+
+      - name: Metrics - Lines of code (NEW)
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.lines.svg
+          output_action: none
+          base: ""
+          plugin_lines: yes
+
+      - name: Metrics - Topics (NEW)
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.topics.svg
+          output_action: none
+          base: ""
+          plugin_topics: yes
+          plugin_topics_mode: icons
+          plugin_topics_sort: stars
+          plugin_topics_limit: 15
+
+      - name: Metrics - Starred repositories (NEW)
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.stars.svg
+          output_action: none
+          base: ""
+          plugin_stars: yes
+          plugin_stars_limit: 4
+
+      - name: Metrics - Notable contributions (NEW)
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.notable.svg
+          output_action: none
+          base: ""
+          plugin_notable: yes
+
+      - name: Metrics - People (NEW)
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.people.svg
+          output_action: none
+          base: ""
+          plugin_people: yes
+          plugin_people_types: followers, following
+
+      - name: Metrics - LeetCode (NEW)
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.leetcode.svg
+          output_action: none
+          base: ""
+          plugin_leetcode: yes
+          plugin_leetcode_user: YOUR_LEETCODE_USERNAME
+
+      - name: Metrics - Repositories showcase (NEW)
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.pinned.svg
+          output_action: none
+          base: ""
+          plugin_pinned: yes
+          plugin_pinned_limit: 6
+
+      # ================= END NEW METRICS =================
+
+      # ---------- Collect everything ----------
       - name: Consolidate build assets
         run: |
-          mkdir -p output_assets
+          mkdir -p output_assets/metrics
           # Move snake assets
           cp -r dist/* output_assets/
           # Move 3D contribution assets
           cp -r profile-3d-contrib output_assets/
+          # Metrics assets (rendered by lowlighter/metrics)
+          cp /metrics_renders/*.svg output_assets/metrics/
+          ls -R output_assets
+
+      # ---------- Preview page (NEW) ----------
+      - name: Build preview page
+        run: |
+          cd output_assets
+          {
+            echo "# Metrics preview"
+            echo
+            for f in $(ls metrics/*.svg | sort); do
+              echo "### \`$f\`"
+              echo "![${f}](./${f})"
+              echo
+            done
+          } > preview.md
 
       - name: Deploy all assets to output branch
         uses: peaceiris/actions-gh-pages@v3
