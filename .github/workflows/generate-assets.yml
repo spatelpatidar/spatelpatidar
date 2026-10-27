@@ -122,7 +122,6 @@ jobs:
           plugin_habits_facts: no
           plugin_habits_charts: no
           plugin_errors_fatal: yes
-
       # ================= NEW METRICS BELOW =================
 
       - name: Metrics - Lines of code (NEW)
