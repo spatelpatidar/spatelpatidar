@@ -15,9 +15,6 @@
 ### `metrics/metrics.plugin.languages.svg`
 ![metrics/metrics.plugin.languages.svg](./metrics/metrics.plugin.languages.svg)
 
-### `metrics/metrics.plugin.leetcode.svg`
-![metrics/metrics.plugin.leetcode.svg](./metrics/metrics.plugin.leetcode.svg)
-
 ### `metrics/metrics.plugin.lines.svg`
 ![metrics/metrics.plugin.lines.svg](./metrics/metrics.plugin.lines.svg)
 
