@@ -172,7 +172,7 @@ jobs:
       - name: Metrics - Achievements (PATCHED FORK)
         uses: skshailendrakumar/metrics@master
         continue-on-error: true
-        timeout-minutes: 20
+        timeout-minutes: 30
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: skshailendrakumar
@@ -190,7 +190,7 @@ jobs:
       - name: Metrics - Coding habits (PATCHED FORK)
         uses: skshailendrakumar/metrics@master
         continue-on-error: true
-        timeout-minutes: 10
+        timeout-minutes: 30
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: skshailendrakumar
