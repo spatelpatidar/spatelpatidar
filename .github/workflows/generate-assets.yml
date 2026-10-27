@@ -167,6 +167,23 @@ jobs:
           plugin_repositories: yes
           plugin_repositories_pinned: 6
 
+      - name: Build patched metrics image (no full build)
+        run: |
+          set -e
+          docker pull ghcr.io/lowlighter/metrics:v3.34
+          docker run --name metrics-patch --entrypoint /bin/sh ghcr.io/lowlighter/metrics:v3.34 -c '
+            cd /metrics/source/plugins
+            sed -i "s/\bprojects\b/projectsV2/g" achievements/queries/achievements.graphql achievements/list/users.mjs
+            sed -i "s/payload\.commits)/payload.commits ?? [])/" habits/index.mjs
+            echo "--- achievements patch ---"
+            grep -n "projectsV2" achievements/queries/achievements.graphql achievements/list/users.mjs
+            echo "--- habits patch ---"
+            grep -n "payload.commits" habits/index.mjs
+            grep -q "projectsV2" achievements/list/users.mjs
+            grep -q "payload.commits ?? \[\]" habits/index.mjs
+          '
+          docker commit metrics-patch metrics:3.34.0
+
       # ================= PATCHED FORK (achievements + habits) =================
       # First step builds the Docker image (several minutes), second reuses it.
       - name: Metrics - Achievements (PATCHED FORK)
