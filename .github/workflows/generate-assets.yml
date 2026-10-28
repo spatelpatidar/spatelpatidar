@@ -85,17 +85,21 @@ jobs:
 
       - name: Metrics - Lines of code
         uses: lowlighter/metrics@latest
+        continue-on-error: true
+        timeout-minutes: 10
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: spatelpatidar
           template: classic
           filename: metrics.plugin.lines.svg
-          output_action: commit
+          output_action: none          # <-- was commit
           base: header
           plugin_lines: yes
+          plugin_lines_sections: base, repositories
           plugin_lines_history_limit: 5
           plugin_lines_delay: 30
           plugin_lines_repositories_limit: 10
+          plugin_lines_skipped: mygit-ruby, securevault-original-code
           commits_authoring: spatelpatidar
           debug: yes
       # - name: Metrics - Lines of code
