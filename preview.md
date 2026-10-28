@@ -3,6 +3,9 @@
 ### `metrics/github-metrics.svg`
 ![metrics/github-metrics.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/github-metrics.svg)
 
+### `metrics/metrics.plugin.achievements.detailed.svg`
+![metrics/metrics.plugin.achievements.detailed.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.detailed.svg)
+
 ### `metrics/metrics.plugin.achievements.svg`
 ![metrics/metrics.plugin.achievements.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.svg)
 
@@ -32,4 +35,10 @@
 
 ### `metrics/metrics.plugin.topics.svg`
 ![metrics/metrics.plugin.topics.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.topics.svg)
+
+### `metrics/metrics.plugin.traffic.svg`
+![metrics/metrics.plugin.traffic.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.traffic.svg)
+
+### `metrics/metrics.template.repository.svg`
+![metrics/metrics.template.repository.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.svg)
 
