@@ -192,7 +192,7 @@ jobs:
         timeout-minutes: 30
         with:
           token: ${{ secrets.METRICS_TOKEN }}
-          user: skshailendrakumar
+          user: spatelpatidar
           template: classic
           filename: metrics.plugin.achievements.svg
           output_action: none
@@ -203,6 +203,70 @@ jobs:
           plugin_achievements_display: compact
           plugin_achievements_limit: 0
           plugins_errors_fatal: yes
+
+      - name: Metrics - Achievements detailed
+        uses: skshailendrakumar/metrics@master
+        continue-on-error: true
+        timeout-minutes: 15
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.achievements.detailed.svg
+          output_action: none
+          base: ""
+          plugin_achievements: yes
+          plugin_achievements_threshold: C
+          plugin_achievements_secrets: yes
+          plugin_achievements_display: detailed
+          plugin_achievements_limit: 0
+          plugins_errors_fatal: yes
+
+      - name: Metrics - Recent activity
+        uses: skshailendrakumar/metrics@master
+        continue-on-error: true
+        timeout-minutes: 15
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.activity.svg
+          output_action: none
+          base: ""
+          plugin_activity: yes
+          plugin_activity_limit: 8
+          plugin_activity_days: 14
+          plugin_activity_load: 300
+          plugin_activity_visibility: public
+          plugin_activity_timestamps: yes
+          plugin_activity_filter: all
+          plugins_errors_fatal: yes
+
+      - name: Metrics - Repositories traffic
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.traffic.svg
+          output_action: none
+          base: ""
+          plugin_traffic: yes
+          plugins_errors_fatal: yes
+
+      - name: Metrics - Repository template
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: spatelpatidar              # any repo name under your account
+          template: repository
+          filename: metrics.template.repository.svg
+          output_action: none
 
       - name: Metrics - Coding habits (PATCHED FORK)
         uses: skshailendrakumar/metrics@master
