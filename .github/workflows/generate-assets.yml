@@ -85,16 +85,31 @@ jobs:
 
       - name: Metrics - Lines of code
         uses: lowlighter/metrics@latest
-        continue-on-error: true
-        timeout-minutes: 8
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: spatelpatidar
           template: classic
           filename: metrics.plugin.lines.svg
-          output_action: none
-          base: ""
+          output_action: commit
+          base: header
           plugin_lines: yes
+          plugin_lines_history_limit: 5
+          plugin_lines_delay: 30
+          plugin_lines_repositories_limit: 10
+          commits_authoring: spatelpatidar
+          debug: yes
+      # - name: Metrics - Lines of code
+      #   uses: lowlighter/metrics@latest
+      #   continue-on-error: true
+      #   timeout-minutes: 8
+      #   with:
+      #     token: ${{ secrets.METRICS_TOKEN }}
+      #     user: spatelpatidar
+      #     template: classic
+      #     filename: metrics.plugin.lines.svg
+      #     output_action: none
+      #     base: ""
+      #     plugin_lines: yes
 
       - name: Metrics - Topics
         uses: lowlighter/metrics@latest
@@ -126,18 +141,18 @@ jobs:
           plugin_stars: yes
           plugin_stars_limit: 4
 
-      - name: Metrics - Notable contributions
-        uses: lowlighter/metrics@latest
-        continue-on-error: true
-        timeout-minutes: 8
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          user: spatelpatidar
-          template: classic
-          filename: metrics.plugin.notable.svg
-          output_action: none
-          base: ""
-          plugin_notable: yes
+      # - name: Metrics - Notable contributions
+      #   uses: lowlighter/metrics@latest
+      #   continue-on-error: true
+      #   timeout-minutes: 8
+      #   with:
+      #     token: ${{ secrets.METRICS_TOKEN }}
+      #     user: spatelpatidar
+      #     template: classic
+      #     filename: metrics.plugin.notable.svg
+      #     output_action: none
+      #     base: ""
+      #     plugin_notable: yes
 
       - name: Metrics - People
         uses: lowlighter/metrics@latest
