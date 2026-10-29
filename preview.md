@@ -30,6 +30,15 @@
 ### `metrics/metrics.plugin.traffic.svg`
 ![metrics/metrics.plugin.traffic.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.traffic.svg)
 
-### `metrics/metrics.template.repository.svg`
-![metrics/metrics.template.repository.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.svg)
+### `metrics/metrics.template.repository.respondo-graphql.svg`
+![metrics/metrics.template.repository.respondo-graphql.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-graphql.svg)
+
+### `metrics/metrics.template.repository.respondo-grpc.svg`
+![metrics/metrics.template.repository.respondo-grpc.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-grpc.svg)
+
+### `metrics/metrics.template.repository.respondo.svg`
+![metrics/metrics.template.repository.respondo.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo.svg)
+
+### `metrics/metrics.template.repository.spatelpatidar.svg`
+![metrics/metrics.template.repository.spatelpatidar.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.spatelpatidar.svg)
 
