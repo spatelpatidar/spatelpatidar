@@ -160,7 +160,7 @@ jobs:
           plugin_traffic_skipped: spatelpatidar/securevault, spatelpatidar/jwt_authentication, spatelpatidar/render_ping, spatelpatidar/securevault-original-code, spatelpatidar/interview_prep, spatelpatidar/mygit-ruby, spatelpatidar/billing_system, spatelpatidar/render-cron-job
           plugins_errors_fatal: yes
 
-      - name: Metrics - Repository template
+      - name: Metrics - Repository template (spatelpatidar)
         uses: lowlighter/metrics@latest
         continue-on-error: true
         timeout-minutes: 10
@@ -169,10 +169,10 @@ jobs:
           user: spatelpatidar
           repo: spatelpatidar
           template: repository
-          filename: metrics.template.repository.svg
+          filename: metrics.template.repository.spatelpatidar.svg
           output_action: none
 
-      - name: Metrics - Repository template
+      - name: Metrics - Repository template (respondo)
         uses: lowlighter/metrics@latest
         continue-on-error: true
         timeout-minutes: 10
@@ -181,10 +181,10 @@ jobs:
           user: spatelpatidar
           repo: respondo
           template: repository
-          filename: metrics.template.repository.svg
+          filename: metrics.template.repository.respondo.svg
           output_action: none
 
-      - name: Metrics - Repository template
+      - name: Metrics - Repository template (respondo-graphql)
         uses: lowlighter/metrics@latest
         continue-on-error: true
         timeout-minutes: 10
@@ -193,10 +193,10 @@ jobs:
           user: spatelpatidar
           repo: respondo-graphql
           template: repository
-          filename: metrics.template.repository.svg
+          filename: metrics.template.repository.respondo-graphql.svg
           output_action: none
 
-      - name: Metrics - Repository template
+      - name: Metrics - Repository template (respondo-grpc)
         uses: lowlighter/metrics@latest
         continue-on-error: true
         timeout-minutes: 10
@@ -205,7 +205,7 @@ jobs:
           user: spatelpatidar
           repo: respondo-grpc
           template: repository
-          filename: metrics.template.repository.svg
+          filename: metrics.template.repository.respondo-grpc.svg
           output_action: none
 
       # ================= PATCHED FORK (prebuilt image) =================
