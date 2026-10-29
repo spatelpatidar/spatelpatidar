@@ -21,9 +21,6 @@
 ### `metrics/metrics.plugin.lines.svg`
 ![metrics/metrics.plugin.lines.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.lines.svg)
 
-### `metrics/metrics.plugin.notable.svg`
-![metrics/metrics.plugin.notable.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.notable.svg)
-
 ### `metrics/metrics.plugin.people.svg`
 ![metrics/metrics.plugin.people.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.people.svg)
 
