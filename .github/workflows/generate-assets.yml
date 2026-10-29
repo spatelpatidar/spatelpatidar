@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: profile-assets
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   generate-assets:
@@ -39,7 +39,7 @@ jobs:
             dist/github-snake-dark.svg?palette=github-dark
             dist/github-snake-light.svg?palette=github-light
 
-      # ---------- Metrics (rendered to disk, NOT committed) ----------
+      # ---------- Metrics (lowlighter prebuilt image) ----------
       - name: Metrics - GitHub stats
         uses: lowlighter/metrics@latest
         continue-on-error: true
@@ -101,19 +101,6 @@ jobs:
           plugin_lines_repositories_limit: 10
           plugin_lines_skipped: mygit-ruby, securevault-original-code
           commits_authoring: spatelpatidar
-          debug: yes
-      # - name: Metrics - Lines of code
-      #   uses: lowlighter/metrics@latest
-      #   continue-on-error: true
-      #   timeout-minutes: 8
-      #   with:
-      #     token: ${{ secrets.METRICS_TOKEN }}
-      #     user: spatelpatidar
-      #     template: classic
-      #     filename: metrics.plugin.lines.svg
-      #     output_action: none
-      #     base: ""
-      #     plugin_lines: yes
 
       - name: Metrics - Topics
         uses: lowlighter/metrics@latest
@@ -145,19 +132,6 @@ jobs:
           plugin_stars: yes
           plugin_stars_limit: 4
 
-      # - name: Metrics - Notable contributions
-      #   uses: lowlighter/metrics@latest
-      #   continue-on-error: true
-      #   timeout-minutes: 8
-      #   with:
-      #     token: ${{ secrets.METRICS_TOKEN }}
-      #     user: spatelpatidar
-      #     template: classic
-      #     filename: metrics.plugin.notable.svg
-      #     output_action: none
-      #     base: ""
-      #     plugin_notable: yes
-
       - name: Metrics - People
         uses: lowlighter/metrics@latest
         continue-on-error: true
@@ -186,81 +160,6 @@ jobs:
           plugin_repositories: yes
           plugin_repositories_pinned: 6
 
-      - name: Build patched metrics image (no full build)
-        run: |
-          set -e
-          docker pull ghcr.io/lowlighter/metrics:v3.34
-          docker run --name metrics-patch --entrypoint /bin/sh ghcr.io/lowlighter/metrics:v3.34 -c '
-            cd /metrics/source/plugins
-            sed -i "s/\bprojects\b/projectsV2/g" achievements/queries/achievements.graphql achievements/list/users.mjs
-            sed -i "s/payload\.commits)/payload.commits ?? [])/" habits/index.mjs
-            echo "--- achievements patch ---"
-            grep -n "projectsV2" achievements/queries/achievements.graphql achievements/list/users.mjs
-            echo "--- habits patch ---"
-            grep -n "payload.commits" habits/index.mjs
-            grep -q "projectsV2" achievements/list/users.mjs
-            grep -q "payload.commits ?? \[\]" habits/index.mjs
-          '
-          docker commit metrics-patch metrics:3.34.0
-
-      # ================= PATCHED FORK (achievements + habits) =================
-      # First step builds the Docker image (several minutes), second reuses it.
-      - name: Metrics - Achievements (PATCHED FORK)
-        uses: skshailendrakumar/metrics@master
-        continue-on-error: true
-        timeout-minutes: 30
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          user: spatelpatidar
-          template: classic
-          filename: metrics.plugin.achievements.svg
-          output_action: none
-          base: ""
-          plugin_achievements: yes
-          plugin_achievements_threshold: C
-          plugin_achievements_secrets: yes
-          plugin_achievements_display: compact
-          plugin_achievements_limit: 0
-          plugins_errors_fatal: yes
-
-      - name: Metrics - Achievements detailed
-        uses: skshailendrakumar/metrics@master
-        continue-on-error: true
-        timeout-minutes: 15
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          user: spatelpatidar
-          template: classic
-          filename: metrics.plugin.achievements.detailed.svg
-          output_action: none
-          base: ""
-          plugin_achievements: yes
-          plugin_achievements_threshold: C
-          plugin_achievements_secrets: yes
-          plugin_achievements_display: detailed
-          plugin_achievements_limit: 0
-          plugins_errors_fatal: yes
-
-      - name: Metrics - Recent activity
-        uses: skshailendrakumar/metrics@master
-        continue-on-error: true
-        timeout-minutes: 15
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          user: spatelpatidar
-          template: classic
-          filename: metrics.plugin.activity.svg
-          output_action: none
-          base: ""
-          plugin_activity: yes
-          plugin_activity_limit: 8
-          plugin_activity_days: 14
-          plugin_activity_load: 300
-          plugin_activity_visibility: public
-          plugin_activity_timestamps: yes
-          plugin_activity_filter: all
-          plugins_errors_fatal: yes
-
       - name: Metrics - Repositories traffic
         uses: lowlighter/metrics@latest
         continue-on-error: true
@@ -282,18 +181,88 @@ jobs:
         with:
           token: ${{ secrets.METRICS_TOKEN }}
           user: spatelpatidar
-          repo: spatelpatidar              # any repo name under your account
+          repo: spatelpatidar
           template: repository
           filename: metrics.template.repository.svg
           output_action: none
 
-      - name: Metrics - Coding habits (PATCHED FORK)
+      # ================= PATCHED FORK (prebuilt image) =================
+      # Download the image built by the fork's "Build metrics image" workflow
+      # and give it the name the action looks for, so no build happens here.
+      - name: Pull prebuilt fork image
+        id: forkimage
+        continue-on-error: true
+        run: |
+          docker pull ghcr.io/skshailendrakumar/metrics-fork:latest
+          docker tag ghcr.io/skshailendrakumar/metrics-fork:latest metrics:forked-3.35.0-beta
+
+      - name: Metrics - Achievements (fork)
+        if: steps.forkimage.outcome == 'success'
         uses: skshailendrakumar/metrics@master
         continue-on-error: true
-        timeout-minutes: 30
+        timeout-minutes: 10
         with:
           token: ${{ secrets.METRICS_TOKEN }}
-          user: skshailendrakumar
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.achievements.svg
+          output_action: none
+          base: ""
+          plugin_achievements: yes
+          plugin_achievements_threshold: C
+          plugin_achievements_secrets: yes
+          plugin_achievements_display: compact
+          plugin_achievements_limit: 0
+          plugins_errors_fatal: yes
+
+      - name: Metrics - Achievements detailed (fork)
+        if: steps.forkimage.outcome == 'success'
+        uses: skshailendrakumar/metrics@master
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.achievements.detailed.svg
+          output_action: none
+          base: ""
+          plugin_achievements: yes
+          plugin_achievements_threshold: C
+          plugin_achievements_secrets: yes
+          plugin_achievements_display: detailed
+          plugin_achievements_limit: 0
+          plugins_errors_fatal: yes
+
+      - name: Metrics - Recent activity (fork)
+        if: steps.forkimage.outcome == 'success'
+        uses: skshailendrakumar/metrics@master
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          template: classic
+          filename: metrics.plugin.activity.svg
+          output_action: none
+          base: ""
+          plugin_activity: yes
+          plugin_activity_limit: 8
+          plugin_activity_days: 14
+          plugin_activity_load: 300
+          plugin_activity_visibility: public
+          plugin_activity_timestamps: yes
+          plugin_activity_filter: all
+          plugins_errors_fatal: yes
+
+      - name: Metrics - Coding habits (fork)
+        if: steps.forkimage.outcome == 'success'
+        uses: skshailendrakumar/metrics@master
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
           template: classic
           filename: metrics.plugin.habits.charts.svg
           output_action: none
