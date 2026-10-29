@@ -99,24 +99,9 @@ jobs:
           plugin_lines_history_limit: 5
           plugin_lines_delay: 30
           plugin_lines_repositories_limit: 10
-          plugin_lines_skipped: mygit-ruby, securevault-original-code
+          plugin_lines_skipped: spatelpatidar/securevault, spatelpatidar/jwt_authentication, spatelpatidar/render_ping, spatelpatidar/securevault-original-code, spatelpatidar/interview_prep, spatelpatidar/mygit-ruby, spatelpatidar/billing_system, spatelpatidar/render-cron-job
+          # plugin_lines_skipped: mygit-ruby, securevault-original-code
           commits_authoring: spatelpatidar
-
-      - name: Metrics - Topics
-        uses: lowlighter/metrics@latest
-        continue-on-error: true
-        timeout-minutes: 8
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          user: spatelpatidar
-          template: classic
-          filename: metrics.plugin.topics.svg
-          output_action: none
-          base: ""
-          plugin_topics: yes
-          plugin_topics_mode: icons
-          plugin_topics_sort: stars
-          plugin_topics_limit: 15
 
       - name: Metrics - Starred repositories
         uses: lowlighter/metrics@latest
@@ -170,8 +155,9 @@ jobs:
           template: classic
           filename: metrics.plugin.traffic.svg
           output_action: none
-          base: ""
+          base: repositories
           plugin_traffic: yes
+          plugin_traffic_skipped: spatelpatidar/securevault, spatelpatidar/jwt_authentication, spatelpatidar/render_ping, spatelpatidar/securevault-original-code, spatelpatidar/interview_prep, spatelpatidar/mygit-ruby, spatelpatidar/billing_system, spatelpatidar/render-cron-job
           plugins_errors_fatal: yes
 
       - name: Metrics - Repository template
@@ -182,6 +168,42 @@ jobs:
           token: ${{ secrets.METRICS_TOKEN }}
           user: spatelpatidar
           repo: spatelpatidar
+          template: repository
+          filename: metrics.template.repository.svg
+          output_action: none
+
+      - name: Metrics - Repository template
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: respondo
+          template: repository
+          filename: metrics.template.repository.svg
+          output_action: none
+
+      - name: Metrics - Repository template
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: respondo-graphql
+          template: repository
+          filename: metrics.template.repository.svg
+          output_action: none
+
+      - name: Metrics - Repository template
+        uses: lowlighter/metrics@latest
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: respondo-grpc
           template: repository
           filename: metrics.template.repository.svg
           output_action: none
@@ -253,25 +275,6 @@ jobs:
           plugin_activity_visibility: public
           plugin_activity_timestamps: yes
           plugin_activity_filter: all
-          plugins_errors_fatal: yes
-
-      - name: Metrics - Coding habits (fork)
-        if: steps.forkimage.outcome == 'success'
-        uses: skshailendrakumar/metrics@master
-        continue-on-error: true
-        timeout-minutes: 10
-        with:
-          token: ${{ secrets.METRICS_TOKEN }}
-          user: spatelpatidar
-          template: classic
-          filename: metrics.plugin.habits.charts.svg
-          output_action: none
-          base: ""
-          plugin_habits: yes
-          plugin_habits_from: 100
-          plugin_habits_days: 14
-          plugin_habits_facts: yes
-          plugin_habits_charts: no
           plugins_errors_fatal: yes
 
       # ---------- Collect everything ----------
