@@ -205,6 +205,20 @@
 
 <div align="center">
 
+<a href="https://github.com/spatelpatidar/spatelpatidar/blob/main/STATS.md">
+  <img src="https://img.shields.io/badge/View_All_Stats-Gallery-38bdf8?style=for-the-badge&logo=github&labelColor=0d001a" alt="Open stats gallery"/>
+</a>
+
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+<div align="center">
+
 ![Profile Views](https://komarev.com/ghpvc/?username=spatelpatidar&style=for-the-badge&color=38bdf8&labelColor=0d001a&label=PROFILE+VIEWS)
 
 <br/><br/>
@@ -212,13 +226,3 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff6fd8,25:a855f7,50:6366f1,75:38bdf8,100:34d399&height=120&section=footer&text=always%20learning%2C%20always%20building%20♥&fontSize=20&fontColor=ffffff&animation=fadeIn" width="100%"/>
 
 </div>
-<details>
-  <summary><h4>💻 Click here to See ⬇️</h4></summary>
-    <a href="https://github.com/spatelpatidar">
-       <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&gap=0.6&scale=2&flatten=2&animation=wave&animation_duration=4&animation_delay=0.06&animation_amplitude=24&animation_frequency=0.1&animation_wave_center=0_3&format=svg&weeks=52&theme=native&dark=true">
-        <source media="(prefers-color-scheme: light)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&gap=0.6&scale=2&flatten=2&animation=wave&animation_duration=4&animation_delay=0.06&animation_amplitude=24&animation_frequency=0.1&animation_wave_center=0_3&format=svg&weeks=52&theme=native">
-        <img alt="" src="[https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&flatten=1&weeks=40&animation=wave&format=svg&gap=0.6&animation_frequency=0.2&animation_amplitude=20&theme=pink](https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&gap=0.6&scale=2&flatten=2&animation=wave&animation_duration=4&animation_delay=0.06&animation_amplitude=24&animation_frequency=0.1&animation_wave_center=0_3&format=svg&weeks=52&theme=native)">
-      </picture>
-    </a>
-</details>
