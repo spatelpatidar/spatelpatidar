@@ -205,6 +205,20 @@
 
 <div align="center">
 
+<a href="https://github.com/spatelpatidar/spatelpatidar/blob/main/STATS.md">
+  <img src="https://img.shields.io/badge/View_All_Stats-Gallery-38bdf8?style=for-the-badge&logo=github&labelColor=0d001a" alt="Open stats gallery"/>
+</a>
+
+</div>
+
+<br/>
+
+---
+
+<br/>
+
+<div align="center">
+
 ![Profile Views](https://komarev.com/ghpvc/?username=spatelpatidar&style=for-the-badge&color=38bdf8&labelColor=0d001a&label=PROFILE+VIEWS)
 
 <br/><br/>
