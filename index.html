@@ -7,115 +7,307 @@
 <title>Shailendra Kumar | Backend Developer · Ruby on Rails · Flutter</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="alternate icon" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:#131416; --text:#c9d1d9; --line:#2e3135; --th:#232629;
-    --link:#58a6ff; --head:#f0f6fc; --panel:#1c1e21;
+    --bg:#0d001a; --text:#c7d0e0; --muted:#7d8aa5; --line:rgba(120,140,200,.18);
+    --panel:#1c1e21; --head:#f4f7ff; --link:#58a6ff;
+    --c1:#34d399; --c2:#38bdf8; --c3:#6366f1; --c4:#a855f7; --c5:#ff6fd8;
+    --accent:#38bdf8; --accent2:#a855f7;
+    --grad:linear-gradient(120deg,var(--c1),var(--c2),var(--c3),var(--c4),var(--c5));
+    --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+    --display:"Orbitron","Inter",sans-serif;
   }
+  /* Weekday accent (script sets data-day 0..6): changes the neon accent + panel tint */
+  :root[data-day="0"] { --accent:#38bdf8; --accent2:#a855f7; --panel:#1c1e21; }
+  :root[data-day="1"] { --accent:#38bdf8; --accent2:#6366f1; --panel:#18222e; }
+  :root[data-day="2"] { --accent:#34d399; --accent2:#38bdf8; --panel:#18241f; }
+  :root[data-day="3"] { --accent:#a855f7; --accent2:#ff6fd8; --panel:#211c2b; }
+  :root[data-day="4"] { --accent:#f59e0b; --accent2:#ff6fd8; --panel:#241e1a; }
+  :root[data-day="5"] { --accent:#22d3ee; --accent2:#34d399; --panel:#17262b; }
+  :root[data-day="6"] { --accent:#ff6fd8; --accent2:#a855f7; --panel:#261b21; }
+
   @media (prefers-color-scheme: light) {
-    :root {
-      --bg:#ffffff; --text:#24292f; --line:#d0d7de; --th:#f6f8fa;
-      --link:#0969da; --head:#1f2328; --panel:#f6f8fa;
-    }
+    :root { --bg:#eef1f8; --text:#27304a; --muted:#5b6784; --line:rgba(60,80,140,.2); --head:#0d1330; --link:#0969da; }
+    :root[data-day] { --panel:#ffffff; }
   }
-  /* Weekday colors (0 = Sunday ... 6 = Saturday). The script in <head> sets data-day on <html>.
-     Background, cards, borders and table headers all change together. */
-  @media (prefers-color-scheme: dark) {
-    :root[data-day="0"] { --bg:#131416; --panel:#1c1e21; --line:#2e3135; --th:#25282b; }
-    :root[data-day="1"] { --bg:#0f1720; --panel:#18222e; --line:#2a3644; --th:#1f2b39; }
-    :root[data-day="2"] { --bg:#101a17; --panel:#18241f; --line:#2a3a33; --th:#1f2d27; }
-    :root[data-day="3"] { --bg:#181420; --panel:#211c2b; --line:#342d42; --th:#292335; }
-    :root[data-day="4"] { --bg:#1a1512; --panel:#241e1a; --line:#3a312b; --th:#2d2520; }
-    :root[data-day="5"] { --bg:#0f1b1f; --panel:#17262b; --line:#28393f; --th:#1e2f35; }
-    :root[data-day="6"] { --bg:#1c1317; --panel:#261b21; --line:#3b2c34; --th:#30232a; }
-  }
-  @media (prefers-color-scheme: light) {
-    :root[data-day="0"] { --bg:#f3f4f6; }
-    :root[data-day="1"] { --bg:#eef4fb; }
-    :root[data-day="2"] { --bg:#eef7f1; }
-    :root[data-day="3"] { --bg:#f4f0fa; }
-    :root[data-day="4"] { --bg:#faf3ec; }
-    :root[data-day="5"] { --bg:#ebf6f8; }
-    :root[data-day="6"] { --bg:#fbeff3; }
-  }
-  /* Hide the page scrollbar but keep scrolling (wheel, touch, keyboard) working */
-  html { scrollbar-width:none; -ms-overflow-style:none; }
-  html::-webkit-scrollbar, body::-webkit-scrollbar { display:none; width:0; height:0; }
+
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; }
+  html::-webkit-scrollbar, body::-webkit-scrollbar { display:none; }
   body {
-    background:var(--bg); color:var(--text);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    margin:0; padding:0 16px 60px;
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    overflow-x:hidden; padding:0 16px 80px;
   }
-  .wrap { max-width:1000px; margin:0 auto; text-align:center; }
+  a { color:var(--link); text-decoration:none; }
+  a:hover { text-decoration:underline; }
   img { max-width:100%; }
-  hr { border:none; border-top:1px solid var(--line); margin:32px 0; }
   h2, h3 { color:var(--head); }
-  a { color:var(--link); }
-  .about { text-align:left; max-width:none; margin:0; line-height:1.7; }
-  .about p:first-of-type { margin-top:0; }
-  .about p:last-of-type { margin-bottom:0; }
-  .about-card { padding:20px 24px; }
-  .about img.gif { float:right; width:280px; border-radius:16px; margin:0 0 16px 20px; }
-  table { width:100%; border-collapse:collapse; margin:16px 0; text-align:left; font-size:14px; }
-  th, td { border:1px solid var(--line); padding:8px 10px; }
-  th { background:var(--th); color:var(--head); }
-  .badges img { margin:4px 3px; }
-  .grid {
-    display:grid; grid-template-columns:repeat(2,1fr);
-    gap:16px; align-items:stretch; margin:16px 0;
+  ::selection { background:var(--accent); color:#000; }
+
+  /* ===== background layers ===== */
+  #bg { position:fixed; inset:0; z-index:-3; width:100%; height:100%;
+    background:radial-gradient(circle at 50% 28%, #1c0733 0%, #12001f 45%, #0d001a 100%); }
+  @media (prefers-color-scheme: light) {
+    #bg { background:radial-gradient(circle at 50% 28%, hsl(205 75% 96%) 0%, hsl(192 50% 97.5%) 45%, hsl(180 35% 97%) 100%); }
   }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; }
-  .card h3 { margin:4px 0 10px; font-size:16px; }
-  .card img { display:block; margin:0 auto; max-width:100%; height:auto; }
-  .card .badges img { display:inline-block; margin:4px 3px; }
-  .tech-card p:first-child { margin-top:4px; }
-  .tech-card p:last-child, .card > .badges:last-child { margin-bottom:4px; }
-  .card.wide { grid-column:1 / -1; }
-  .wide-card { margin:16px 0; }
-  .cols { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; align-items:stretch; margin:16px 0; }
-  .col { display:flex; flex-direction:column; gap:16px; }
-  .col .card:last-child { flex:1; }
-  .col .card img { width:100%; height:auto; display:block; }
-  details { margin:16px 0; }
-  .card details { margin:0; }
-  .card table { margin:0; }
-  .table-scroll { overflow-x:auto; }
-  summary { cursor:pointer; font-weight:600; color:var(--head); }
-  /* GitHub button: hidden by default, shown only when the visitor did not come from GitHub */
+  .grid-floor {
+    position:fixed; inset:0; z-index:-2; pointer-events:none;
+    background:
+      radial-gradient(1100px 650px at 50% -12%, color-mix(in srgb,var(--accent) 20%, transparent), transparent 70%),
+      linear-gradient(var(--line) 1px, transparent 1px) 0 0/56px 56px,
+      linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0/56px 56px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 20%, #000 20%, transparent 80%);
+            mask-image:radial-gradient(ellipse at 50% 20%, #000 20%, transparent 80%);
+    opacity:.3;
+  }
+  .scanlines {
+    position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.07;
+    background:repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 3px);
+    mix-blend-mode:overlay;
+  }
+  .cursor-glow {
+    position:fixed; z-index:-1; width:520px; height:520px; left:0; top:0; pointer-events:none;
+    border-radius:50%; transform:translate(-50%,-50%);
+    background:radial-gradient(circle, color-mix(in srgb,var(--accent) 22%, transparent), transparent 65%);
+    filter:blur(10px); transition:opacity .3s;
+  }
+  .progress { position:fixed; top:0; left:0; height:3px; width:0; z-index:2000; background:var(--grad); box-shadow:0 0 12px var(--accent); }
+
+  /* ===== HUD nav ===== */
+  .topbar { position:fixed; top:14px; right:16px; z-index:1600; display:flex; align-items:center; gap:10px; }
+  .hud {
+    position:relative; z-index:1500;
+    display:flex; gap:4px; padding:6px; border-radius:999px;
+    background:color-mix(in srgb,var(--panel) 70%, transparent);
+    backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
+    border:1px solid var(--line); box-shadow:0 8px 32px rgba(0,0,0,.35);
+    font:600 12px var(--mono); letter-spacing:.06em;
+  }
+  .hud a { position:relative; overflow:hidden; isolation:isolate; color:var(--muted); padding:8px 14px; border-radius:999px; text-transform:uppercase; transition:color .25s, transform .2s, box-shadow .25s; }
+  .hud a::before { content:""; position:absolute; inset:0; z-index:-1; background:var(--grad); background-size:300% 100%; animation:slide 4s linear infinite; opacity:0; transition:opacity .25s; }
+  .hud a.on { color:var(--head); background:color-mix(in srgb,var(--accent) 22%, transparent); box-shadow:0 0 18px color-mix(in srgb,var(--accent) 45%, transparent) inset; }
+  .hud a:hover { color:#fff; text-decoration:none; transform:translateY(-1px); box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%, transparent); }
+  .hud a:hover::before { opacity:1; }
+
+  /* ===== GitHub button (original logic kept) ===== */
   .gh-btn {
-    position:fixed; top:16px; right:16px; z-index:1000;
+    position:relative; z-index:1600;
     display:inline-flex; align-items:center; gap:8px;
     padding:9px 16px; border-radius:999px; overflow:hidden; isolation:isolate;
     background:var(--panel); color:var(--head); border:1px solid var(--line);
-    font-size:14px; font-weight:600; text-decoration:none;
+    font:600 13px var(--mono); text-decoration:none !important;
     box-shadow:0 4px 16px rgba(0,0,0,.25);
     transition:color .25s, border-color .25s, transform .2s;
   }
-  /* Gradient layer: invisible normally, fades in on hover */
   .gh-btn::before {
-    content:""; position:absolute; inset:0; z-index:-1;
-    background:linear-gradient(90deg, #ff6fd8 0%, #a855f7 25%, #6366f1 50%, #38bdf8 75%, #34d399 100%);
-    opacity:0; transition:opacity .25s;
+    content:""; position:absolute; inset:0; z-index:-1; background:var(--grad);
+    background-size:300% 100%; animation:slide 4s linear infinite; opacity:0; transition:opacity .25s;
   }
   .gh-btn[hidden] { display:none; }
-  .gh-btn:hover { color:#ffffff; border-color:rgba(255,255,255,.25); text-shadow:0 1px 2px rgba(0,0,0,.35); transform:translateY(-1px); }
+  .gh-btn:hover { color:#fff; border-color:rgba(255,255,255,.25); transform:translateY(-1px); }
   .gh-btn:hover::before { opacity:1; }
   .gh-btn img { width:22px; height:auto; display:block; }
-  @media (max-width:600px) {
-    .gh-btn { top:10px; right:10px; padding:8px 12px; font-size:13px; }
+
+  /* ===== layout ===== */
+  .wrap { max-width:1100px; margin:0 auto; padding-top:90px; }
+  section { margin:72px 0; scroll-margin-top:90px; }
+  .sec-title {
+    font:700 clamp(20px,3vw,28px) var(--display); letter-spacing:.08em; text-transform:uppercase;
+    display:flex; align-items:center; gap:14px; margin:0 0 26px; text-align:left;
   }
-  @media (max-width:700px) {
-    .grid, .cols { grid-template-columns:1fr; }
+  .sec-title::before { content:"//"; color:var(--accent); font-family:var(--mono); text-shadow:0 0 14px var(--accent); }
+  .sec-title::after { content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--accent),transparent); }
+
+  /* reveal */
+  .rv { opacity:0; transform:translateY(28px) scale(.98); transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1); }
+  .rv.in { opacity:1; transform:none; }
+
+  /* ===== neon cards ===== */
+  .card {
+    position:relative; background:var(--panel); border-radius:18px; padding:16px;
+    border:1px solid var(--line); transform-style:preserve-3d;
+    transition:transform .25s ease, box-shadow .3s, border-color .3s;
+    box-shadow:0 10px 30px rgba(0,0,0,.28);
   }
-  @media (max-width:600px) {
-    .about img.gif { float:none; display:block; margin:0 auto 16px; }
+  .card::before { /* animated gradient border */
+    content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px; z-index:0; pointer-events:none;
+    background:conic-gradient(from var(--ang,0deg), transparent 0 55%, var(--accent) 75%, var(--accent2) 90%, transparent);
+    /* -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; */
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    opacity:.55; animation:spin 6s linear infinite; transition:opacity .3s;
+  }
+  .card:hover { box-shadow:0 18px 50px rgba(0,0,0,.45), 0 0 40px color-mix(in srgb,var(--accent) 22%, transparent); }
+  .card:hover::before { opacity:1; }
+  .card > * { position:relative; z-index:1; }
+  .card h3 { margin:2px 0 12px; font:600 13px var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--accent); text-align:left; }
+  .card img { display:block; margin:0 auto; height:auto; border-radius:12px; }
+  .card .glare { position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:2;
+    background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%), rgba(255,255,255,.10), transparent 60%); opacity:0; transition:opacity .2s; }
+  .card:hover .glare { opacity:1; }
+
+  @property --ang { syntax:"<angle>"; inherits:false; initial-value:0deg; }
+  @keyframes spin { to { --ang:360deg; } }
+  @keyframes slide { to { background-position:300% 0; } }
+  @keyframes blink { 50% { opacity:0; } }
+  @keyframes pulse { 0%,100% { box-shadow:0 0 0 0 rgba(52,211,153,.6);} 70% { box-shadow:0 0 0 10px rgba(52,211,153,0);} }
+  @keyframes float { 50% { transform:translateY(-8px); } }
+
+  /* ===== hero ===== */
+  .hero { text-align:center; padding:24px 0 10px; }
+  .banner { border-radius:22px; overflow:hidden; box-shadow:0 0 60px color-mix(in srgb,var(--accent) 25%, transparent); }
+  .banner img { display:block; width:100%; }
+  .status { display:inline-flex; align-items:center; gap:10px; margin:26px 0 8px; padding:7px 14px; border-radius:999px;
+    font:600 12px var(--mono); letter-spacing:.08em; background:color-mix(in srgb,var(--panel) 80%, transparent); border:1px solid var(--line); color:var(--muted); }
+  .status i { width:8px; height:8px; border-radius:50%; background:#34d399; animation:pulse 2s infinite; }
+  .glitch {
+    font:900 clamp(34px,7vw,72px)/1.05 var(--display); margin:8px 0 6px; letter-spacing:.04em; text-transform:uppercase;
+    background:var(--grad); background-size:300% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:slide 8s linear infinite; position:relative; display:inline-block;
+    filter:drop-shadow(0 0 22px color-mix(in srgb,var(--accent) 45%, transparent));
+  }
+  .glitch::before, .glitch::after { content:attr(data-t); position:absolute; inset:0; background:inherit; -webkit-background-clip:text; background-clip:text; opacity:0; }
+  .glitch:hover::before { opacity:.8; transform:translate(3px,-2px); clip-path:inset(0 0 55% 0); animation:none; }
+  .glitch:hover::after { opacity:.8; transform:translate(-3px,2px); clip-path:inset(55% 0 0 0); animation:none; }
+  .role { font:500 14px var(--mono); color:var(--muted); letter-spacing:.16em; text-transform:uppercase; }
+  .typing { margin:18px 0 6px; min-height:34px; }
+  .cta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:22px 0 0; }
+  .btn {
+    position:relative; display:inline-flex; align-items:center; gap:8px; padding:12px 22px; border-radius:12px; overflow:hidden; isolation:isolate;
+    font:600 13px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--head); border:1px solid var(--line);
+    background:color-mix(in srgb,var(--panel) 80%, transparent); transition:.25s;
+  }
+  .btn::before { content:""; position:absolute; inset:0; z-index:-1; background:var(--grad); background-size:300% 100%; animation:slide 5s linear infinite; opacity:0; transition:.25s; }
+  .btn:hover { color:#fff; transform:translateY(-2px); text-decoration:none; box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 35%, transparent); }
+  .btn:hover::before { opacity:1; }
+  .btn.primary { border-color:color-mix(in srgb,var(--accent) 55%, transparent); }
+
+  /* counters */
+  .counters { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:44px 0 0; }
+  .counter { text-align:center; padding:18px 8px; }
+  .counter b { display:block; font:900 clamp(26px,4vw,40px) var(--display); background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .counter span { display:block; margin-top:6px; font:500 11px var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+
+  /* ===== terminal about ===== */
+  .term { padding:0; overflow:hidden; }
+  .term-bar { display:flex; align-items:center; gap:8px; padding:12px 16px; border-bottom:1px solid var(--line); background:rgba(255,255,255,.03); }
+  .dots { display:flex; align-items:center; gap:8px; line-height:0; cursor:default; }
+  .term-bar i { flex:none; position:relative; width:14px; height:14px; border-radius:50%; display:block; transition:filter .15s; }
+  .term-bar i:nth-child(1) { background:#ff5f57; box-shadow:inset 0 0 0 .6px #e0443e; }
+  .term-bar i:nth-child(2) { background:#febc2e; box-shadow:inset 0 0 0 .6px #dea123; }
+  .term-bar i:nth-child(3) { background:#61c554; box-shadow:inset 0 0 0 .6px #4aa83f; }
+  /* macOS behaviour: hovering the group reveals the action glyph on all three.
+     Glyphs fill the whole 14x14 button box and are centred inside the SVG itself. */
+  .term-bar i::after { content:""; position:absolute; inset:0; background-repeat:no-repeat; background-position:0 0; background-size:100% 100%; opacity:0; transition:opacity .12s; }
+  .term-bar i:nth-child(1)::after { background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M4.1 4.1L9.9 9.9M9.9 4.1L4.1 9.9' stroke='%237a1713' stroke-width='1.5' stroke-linecap='round' fill='none'/></svg>") }
+  .term-bar i:nth-child(2)::after { background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M3.6 7H10.4' stroke='%238a5300' stroke-width='1.6' stroke-linecap='round' fill='none'/></svg>") }
+  .term-bar i:nth-child(3)::after { background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M4 4H8.2L4 8.2Z M10 10H5.8L10 5.8Z' fill='%232a6412'/></svg>") }
+  .dots:hover i::after { opacity:1; }
+  .dots i:active { filter:brightness(.82); }
+  .term-bar span { margin-left:10px; font:500 12px var(--mono); color:var(--muted); }
+  .term-body { display:grid; grid-template-columns:1.5fr 1fr; gap:22px; padding:22px 24px; text-align:left; align-items:center; }
+  .term-body p { margin:0 0 14px; line-height:1.75; }
+  .prompt { font-family:var(--mono); color:var(--accent); font-size:13px; }
+  .prompt::after { content:"▋"; margin-left:4px; animation:blink 1s steps(1) infinite; }
+  .log { list-style:none; padding:0; margin:12px 0 0; font-size:14.5px; line-height:1.7; }
+  .log li { padding:7px 0; border-bottom:1px dashed var(--line); }
+  .log li:last-child { border:0; }
+  .term-body .gif { width:100%; border-radius:16px; animation:float 6s ease-in-out infinite; box-shadow:0 0 40px color-mix(in srgb,var(--accent2) 30%, transparent); }
+
+  .stack-body { padding:22px 24px; }
+  @media (max-width:600px) { .stack-body { padding:18px 16px; } }
+
+  .term:not(.modal-card) .dots i:nth-child(3) { cursor:pointer; }
+  .dots i:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  /* inside the modal the green button switches from "expand" to "minimise" */
+  .term-bar i:nth-child(3).min::after { background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'><path d='M7.7 6.3H10.4L7.7 3.6Z M6.3 7.7H3.6L6.3 10.4Z' fill='%232a6412'/></svg>"); }
+
+  /* ===== expanded window (modal) ===== */
+  .modal { position:fixed; inset:0; z-index:3000; display:flex; align-items:center; justify-content:center; padding:4vh 3vw;
+    background:rgba(6,0,16,.58); backdrop-filter:blur(10px) saturate(140%); -webkit-backdrop-filter:blur(10px) saturate(140%);
+    opacity:0; transition:opacity .3s ease; }
+  .modal[hidden] { display:none; }
+  .modal.open { opacity:1; }
+  @media (prefers-color-scheme: light) { .modal { background:rgba(222,229,246,.6); } }
+  .modal-card { width:min(920px,100%); max-height:88vh; display:flex; flex-direction:column; overflow:hidden; margin:0; outline:none;
+    box-shadow:0 30px 120px rgba(0,0,0,.6), 0 0 70px color-mix(in srgb,var(--accent) 22%, transparent); }
+  .modal-card .term-bar { flex:none; }
+  .modal-scroll { flex:1; min-height:0; overflow-y:auto; scrollbar-width:none; }
+  .modal-scroll::-webkit-scrollbar { display:none; }
+  .modal-card .dots i { cursor:pointer; }
+  @media (max-width:700px) { .modal { padding:3vh 3vw; } .modal-card { max-height:92vh; } }
+
+  /* ===== find me ===== */
+  .badges { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:0; }
+  .badges img { margin:0; transition:transform .2s, filter .2s; border-radius:6px; }
+  .badges a:hover img, .badges img:hover { transform:translateY(-4px) scale(1.06); filter:drop-shadow(0 8px 14px color-mix(in srgb,var(--accent) 50%, transparent)); }
+
+  /* ===== tech ===== */
+  .tech-row { margin:0 0 20px; text-align:left; }
+  .tech-row > b { display:block; font:600 12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+  .tech-row .badges { justify-content:flex-start; }
+
+  /* ===== package cards ===== */
+  .pkgs { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:18px; }
+  .pkg { text-align:left; display:flex; flex-direction:column; gap:10px; }
+  .pkg .top { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .pkg h4 { margin:0; font:700 18px var(--mono); }
+  .pkg h4 a { color:var(--head); }
+  .pkg h4 a:hover { color:var(--accent); }
+  .tag { font:600 10px var(--mono); letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; border-radius:999px; border:1px solid var(--line); }
+  .tag.ruby { color:#ff6fd8; border-color:#ff6fd855; } .tag.dart { color:#38bdf8; border-color:#38bdf855; }
+  .pkg p { margin:0; color:var(--text); line-height:1.6; font-size:14.5px; flex:1; }
+  .pkg .foot { display:flex; justify-content:space-between; align-items:center; font:600 12px var(--mono); color:#34d399; margin-top:6px; }
+  .pkg .foot img { margin:0; }
+
+  .wip { text-align:left; display:grid; gap:14px; }
+  .wip-item { display:grid; grid-template-columns:150px 1fr 190px; gap:14px; align-items:center; padding:12px 0; border-bottom:1px dashed var(--line); }
+  .wip-item:last-child { border:0; }
+  .wip-item strong { font:700 15px var(--mono); }
+  .wip-item small { font:500 12px var(--mono); color:var(--muted); }
+  .bar { height:6px; border-radius:6px; background:rgba(128,140,180,.2); overflow:hidden; margin-top:6px; grid-column:1/-1; display:none; }
+  .meter { height:8px; border-radius:8px; background:rgba(128,140,180,.2); overflow:hidden; }
+  .meter i { display:block; height:100%; width:0; border-radius:8px; background:var(--grad); background-size:200% 100%; animation:slide 3s linear infinite; box-shadow:0 0 14px var(--accent); transition:width 1.4s cubic-bezier(.2,.7,.2,1); }
+
+  /* ===== stats ===== */
+  .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; align-items:stretch; margin:18px 0; }
+  .cols { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin:18px 0; }
+  .col { display:flex; flex-direction:column; gap:18px; }
+  .col .card:last-child { flex:1; }
+  .col .card img, .grid .card img { width:100%; }
+  .wide-card { margin:18px 0; }
+  .sub { font:600 14px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:36px 0 14px; text-align:left; }
+  .sub b { color:var(--accent); }
+  details summary { cursor:pointer; font:600 13px var(--mono); letter-spacing:.06em; color:var(--head); }
+  .note { color:var(--muted); font:500 13px var(--mono); text-align:left; margin:-12px 0 20px; }
+
+  footer { text-align:center; margin-top:60px; }
+  footer .views img { border-radius:6px; }
+  footer img.wave { width:100%; border-radius:20px; margin-top:20px; }
+
+  @media (max-width:860px) {
+    .hud { display:none; }
+    .topbar { top:10px; right:10px; }
+    .term-body { grid-template-columns:1fr; }
+    .counters { grid-template-columns:repeat(2,1fr); }
+    .wip-item { grid-template-columns:1fr; gap:6px; }
+    .wrap { padding-top:70px; }
+  }
+  @media (max-width:700px) { .grid, .cols { grid-template-columns:1fr; } .gh-btn { padding:8px 12px; font-size:12px; } }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation:none !important; transition:none !important; }
+    .rv { opacity:1; transform:none; }
   }
 </style>
 <script>
-  // Set the weekday so the CSS above can pick the colors.
+  // Weekday accent + card tint
   document.documentElement.dataset.day = new Date().getDay();
-  // Stat images have the card color baked into their URL (1c1e21).
-  // In dark mode, swap it for today's card color so images blend into the cards.
+  // Stat images have the card color baked in (1c1e21): swap for today's panel color.
   document.addEventListener('DOMContentLoaded', function () {
     if (!window.matchMedia('(prefers-color-scheme: dark)').matches) return;
     var panel = getComputedStyle(document.documentElement).getPropertyValue('--panel').trim().replace('#', '');
@@ -127,318 +319,336 @@
 </script>
 </head>
 <body>
+<canvas id="bg"></canvas>
+<div class="grid-floor"></div>
+<div class="scanlines"></div>
+<div class="cursor-glow" id="glow"></div>
+<div class="progress" id="progress"></div>
+<div class="modal" id="modal" hidden><div class="card term modal-card" role="dialog" aria-modal="true" tabindex="-1"></div></div>
+
+<div class="topbar">
+<nav class="hud" id="hud">
+  <a href="#home" class="on">Home</a>
+  <a href="#about">About</a>
+  <a href="#stack">Stack</a>
+  <a href="#packages">Packages</a>
+  <a href="#stats">Stats</a>
+</nav>
+
 <a id="gh-btn" class="gh-btn" href="https://github.com/spatelpatidar" hidden>
   <img src="favicon.svg" alt="" width="22" height="20">
   <span>My GitHub</span>
 </a>
+</div>
 
 <div class="wrap">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:34d399,25:38bdf8,50:6366f1,75:a855f7,100:ff6fd8&amp;height=230&amp;section=header&amp;text=Shailendra%20Kumar&amp;fontSize=62&amp;fontColor=ffffff&amp;fontAlignY=42&amp;desc=🚀%20Backend%20Developer%20%20•%20%20Ruby%20on%20Rails%20%20•%20%20Flutter%20Enthusiast%20🚀&amp;descAlignY=65&amp;descSize=17&amp;descColor=ffffff&amp;animation=fadeIn" alt="Shailendra Kumar header" width="100%">
-
-<br><br>
-
-<a href="https://git.io/typing-svg" target="_blank" rel="noopener noreferrer"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&amp;weight=600&amp;size=22&amp;pause=1000&amp;color=38BDF8&amp;center=true&amp;vCenter=true&amp;width=650&amp;lines=Building+clean+Rails+APIs+%F0%9F%9A%80;Shipping+gems+%26+pub.dev+packages+%F0%9F%93%A6;Exploring+Flutter%2C+Rust+%26+Go+%F0%9F%94%A5;Test-driven%2C+performance-obsessed+%E2%9A%A1;3%2B+years+of+backend+craft+%F0%9F%92%99" alt="typing animation"></a>
-
-<br><br>
-
-<h2>💙 About Me</h2>
-
-<div class="card about-card">
-<div class="about">
-<img class="gif" src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif" alt="coding gif">
-
-<p>Hi! I'm <b>Shailendra</b>, a backend developer who lives and breathes <b>Ruby on Rails</b>, with a growing love for <b>Flutter</b>.</p>
-
-<p>I care about clean APIs, test-driven code, and shipping tools that solve real problems — even the small ones.</p>
-
-<p>
-🔭&nbsp; <b>Backend Developer</b> with <b>3+ years</b> in Ruby on Rails<br>
-🌱&nbsp; Currently learning <b>Flutter, Rust, GraphQL, Go</b><br>
-📦&nbsp; Published <a href="https://rubygems.org/gems/respondo" target="_blank" rel="noopener noreferrer"><b>respondo</b></a> — 1400+ organic downloads on RubyGems<br>
-🚀&nbsp; Published <a href="https://rubygems.org/gems/auditron" target="_blank" rel="noopener noreferrer"><b>auditron</b></a> — tracks who changed what on any ActiveRecord model, 400+ downloads<br>
-📦&nbsp; Published <a href="https://pub.dev/packages/app_snackbar" target="_blank" rel="noopener noreferrer"><b>app_snackbar</b></a> — 300+ organic downloads on pub.dev<br>
-🚀&nbsp; Published <a href="https://pub.dev/packages/swift_field" target="_blank" rel="noopener noreferrer"><b>swift_field</b></a> — zero-dependency Flutter form widgets, pin fields, searchable dropdowns<br>
-💬&nbsp; Ask me about <b>Ruby on Rails, REST APIs, PostgreSQL, Firebase</b>
-</p>
-</div>
-</div>
-
-<hr>
-
-<h2>🌐 Find Me Here</h2>
-<div class="card">
-<p class="badges">
-<a href="https://github.com/spatelpatidar"><img src="https://img.shields.io/badge/GitHub-%23181717.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" alt="GitHub"></a>
-<a href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?style=for-the-badge&amp;logo=linkedin&amp;logoColor=white" alt="LinkedIn"></a>
-<a href="mailto:shailendrapatidar00@gmail.com"><img src="https://img.shields.io/badge/Gmail-%23EA4335.svg?style=for-the-badge&amp;logo=gmail&amp;logoColor=white" alt="Gmail"></a>
-<a href="https://rubygems.org/profiles/spatelpatidar" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/RubyGems-%23E9573F.svg?style=for-the-badge&amp;logo=rubygems&amp;logoColor=white" alt="RubyGems"></a>
-<a href="https://pub.dev/publishers" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/pub.dev-%230175C2.svg?style=for-the-badge&amp;logo=dart&amp;logoColor=white" alt="pub.dev"></a>
-</p>
-</div>
-
-<hr>
-
-<h2>💻 Tech Stack</h2>
-
-<div class="card tech-card">
-<p><b>🌸 Languages</b></p>
-<p class="badges">
-<img src="https://img.shields.io/badge/Ruby-ff6fd8?style=for-the-badge&amp;logo=ruby&amp;logoColor=white" alt="Ruby">
-<img src="https://img.shields.io/badge/Dart-38bdf8?style=for-the-badge&amp;logo=dart&amp;logoColor=white" alt="Dart">
-<img src="https://img.shields.io/badge/Python-facc15?style=for-the-badge&amp;logo=python&amp;logoColor=black" alt="Python">
-<img src="https://img.shields.io/badge/Java-f97316?style=for-the-badge&amp;logo=openjdk&amp;logoColor=white" alt="Java">
-<img src="https://img.shields.io/badge/C%2B%2B-a855f7?style=for-the-badge&amp;logo=cplusplus&amp;logoColor=white" alt="C++">
-<img src="https://img.shields.io/badge/C-6366f1?style=for-the-badge&amp;logo=c&amp;logoColor=white" alt="C">
-</p>
-
-<p><b>🚀 Backend &amp; Frameworks</b></p>
-<p class="badges">
-<img src="https://img.shields.io/badge/Ruby%20on%20Rails-34d399?style=for-the-badge&amp;logo=rubyonrails&amp;logoColor=white" alt="Rails">
-<img src="https://img.shields.io/badge/Flutter-38bdf8?style=for-the-badge&amp;logo=flutter&amp;logoColor=white" alt="Flutter">
-<img src="https://img.shields.io/badge/GraphQL-ef4444?style=for-the-badge&amp;logo=graphql&amp;logoColor=white" alt="GraphQL">
-</p>
-
-<p><b>🗄️ Databases &amp; Backend Services</b></p>
-<p class="badges">
-<img src="https://img.shields.io/badge/PostgreSQL-38bdf8?style=for-the-badge&amp;logo=postgresql&amp;logoColor=white" alt="PostgreSQL">
-<img src="https://img.shields.io/badge/MySQL-f97316?style=for-the-badge&amp;logo=mysql&amp;logoColor=white" alt="MySQL">
-<img src="https://img.shields.io/badge/SQLite-6366f1?style=for-the-badge&amp;logo=sqlite&amp;logoColor=white" alt="SQLite">
-<img src="https://img.shields.io/badge/Redis-ef4444?style=for-the-badge&amp;logo=redis&amp;logoColor=white" alt="Redis">
-<img src="https://img.shields.io/badge/Firebase-fbbf24?style=for-the-badge&amp;logo=firebase&amp;logoColor=black" alt="Firebase">
-<img src="https://img.shields.io/badge/Supabase-34d399?style=for-the-badge&amp;logo=supabase&amp;logoColor=white" alt="Supabase">
-</p>
-
-<p><b>🎨 Frontend</b></p>
-<p class="badges">
-<img src="https://img.shields.io/badge/HTML5-ff6fd8?style=for-the-badge&amp;logo=html5&amp;logoColor=white" alt="HTML5">
-<img src="https://img.shields.io/badge/CSS3-38bdf8?style=for-the-badge&amp;logo=css3&amp;logoColor=white" alt="CSS3">
-<img src="https://img.shields.io/badge/JavaScript-a855f7?style=for-the-badge&amp;logo=javascript&amp;logoColor=white" alt="JavaScript">
-</p>
-
-<p><b>🛠️ DevOps &amp; Tools</b></p>
-<p class="badges">
-<img src="https://img.shields.io/badge/Docker-38bdf8?style=for-the-badge&amp;logo=docker&amp;logoColor=white" alt="Docker">
-<img src="https://img.shields.io/badge/Git-f97316?style=for-the-badge&amp;logo=git&amp;logoColor=white" alt="Git">
-<img src="https://img.shields.io/badge/GitHub-facc15?style=for-the-badge&amp;logo=github&amp;logoColor=black" alt="GitHub">
-<img src="https://img.shields.io/badge/GitLab-ef4444?style=for-the-badge&amp;logo=gitlab&amp;logoColor=white" alt="GitLab">
-<img src="https://img.shields.io/badge/Linux-a855f7?style=for-the-badge&amp;logo=linux&amp;logoColor=white" alt="Linux">
-<img src="https://img.shields.io/badge/VS%20Code-38bdf8?style=for-the-badge&amp;logo=visualstudiocode&amp;logoColor=white" alt="VS Code">
-<img src="https://img.shields.io/badge/Postman-f97316?style=for-the-badge&amp;logo=postman&amp;logoColor=white" alt="Postman">
-<img src="https://img.shields.io/badge/Cloudflare-fbbf24?style=for-the-badge&amp;logo=cloudflare&amp;logoColor=black" alt="Cloudflare">
-<img src="https://img.shields.io/badge/Swagger-34d399?style=for-the-badge&amp;logo=swagger&amp;logoColor=white" alt="Swagger">
-<img src="https://img.shields.io/badge/Render-38bdf8?style=for-the-badge&amp;logo=render&amp;logoColor=white" alt="Render">
-<img src="https://img.shields.io/badge/Railway-6366f1?style=for-the-badge&amp;logo=railway&amp;logoColor=white" alt="Railway">
-</p>
-
-<p><b>📚 Currently Learning</b></p>
-<p class="badges">
-<img src="https://img.shields.io/badge/Rust-ff6fd8?style=for-the-badge&amp;logo=rust&amp;logoColor=white" alt="Rust">
-<img src="https://img.shields.io/badge/Go-38bdf8?style=for-the-badge&amp;logo=go&amp;logoColor=white" alt="Go">
-<img src="https://img.shields.io/badge/GraphQL-a855f7?style=for-the-badge&amp;logo=graphql&amp;logoColor=white" alt="GraphQL">
-<img src="https://img.shields.io/badge/React-34d399?style=for-the-badge&amp;logo=react&amp;logoColor=white" alt="React">
-</p>
-</div>
-
-<hr>
-
-<h2>📦 Published Packages &amp; Gems</h2>
-
-<div class="card wide-card">
-<div class="table-scroll">
-<table>
-<tr><th>Package</th><th>Description</th><th>Language</th><th>Status</th><th>Downloads</th></tr>
-<tr>
-  <td><a href="https://rubygems.org/gems/respondo" target="_blank" rel="noopener noreferrer">respondo</a></td>
-  <td>Standardizes JSON API responses across Rails apps — success, data, message &amp; meta fields.</td>
-  <td>Ruby</td><td>✅ Published</td>
-  <td><img src="https://img.shields.io/gem/dt/respondo?label=Downloads&amp;style=social" alt="respondo downloads"></td>
-</tr>
-<tr>
-  <td><a href="https://rubygems.org/gems/respondo-graphql" target="_blank" rel="noopener noreferrer">respondo-graphql</a></td>
-  <td>Consistent GraphQL-spec responses for Rails controllers — data, errors, extensions.</td>
-  <td>Ruby</td><td>✅ Published</td>
-  <td><img src="https://img.shields.io/gem/dt/respondo-graphql?label=Downloads&amp;style=social" alt="respondo-graphql downloads"></td>
-</tr>
-<tr>
-  <td><a href="https://rubygems.org/gems/auditron" target="_blank" rel="noopener noreferrer">auditron</a></td>
-  <td>Tracks who changed what on any ActiveRecord model — storing only changed fields, not full snapshots.</td>
-  <td>Ruby</td><td>✅ Published</td>
-  <td><img src="https://img.shields.io/gem/dt/auditron?label=Downloads&amp;style=social" alt="auditron downloads"></td>
-</tr>
-<tr>
-  <td><a href="https://pub.dev/packages/app_snackbar" target="_blank" rel="noopener noreferrer">app_snackbar</a></td>
-  <td>Lightweight Flutter snackbar utility for clean, customizable in-app notifications.</td>
-  <td>Dart</td><td>✅ Published</td>
-  <td><img src="https://img.shields.io/pub/dm/app_snackbar?label=Downloads&amp;style=social" alt="app_snackbar downloads"></td>
-</tr>
-<tr>
-  <td><a href="https://pub.dev/packages/swift_field" target="_blank" rel="noopener noreferrer">swift_field</a></td>
-  <td>Production-grade Flutter form widgets — text fields, password fields, searchable dropdowns &amp; gradient buttons. Zero dependencies.</td>
-  <td>Dart</td><td>✅ Published</td>
-  <td><img src="https://img.shields.io/pub/dm/swift_field?label=Downloads&amp;style=social" alt="swift_field downloads"></td>
-</tr>
-</table>
-</div>
-</div>
-
-<div class="card wide-card">
-<h3>🔨 In Progress — Ruby Gems</h3>
-<div class="table-scroll">
-<table>
-<tr><th>Gem</th><th>Description</th><th>Status</th></tr>
-<tr>
-  <td><a href="https://github.com/spatelpatidar/idempo">idempo</a></td>
-  <td>Opt-in idempotency handling for Rails controllers, ActiveJob classes, and webhook handlers.</td>
-  <td>🚧 Built · Not published</td>
-</tr>
-<tr>
-  <td><a href="https://github.com/spatelpatidar/param_guard">param_guard</a></td>
-  <td>Strong parameter validation and sanitization layer for Rails controllers.</td>
-  <td>🚧 Building · Not published</td>
-</tr>
-<tr>
-  <td>authify</td>
-  <td>JWT &amp; session-based authentication solution for Rails APIs.</td>
-  <td>📄 Documented · In development</td>
-</tr>
-</table>
-</div>
-</div>
-
-<hr>
-
-<h2>📊 GitHub Stats</h2>
-
-<div class="card wide-card">
-  <h3>3D Contribution Graph</h3>
-  <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/profile-3d-contrib/profile-night-rainbow.svg" alt="3D contribution graph">
-</div>
-
-<div class="grid">
-  <div class="card">
-    <h3>GitHub Stats</h3>
-    <img src="https://github-readme-stats-eight-flame.vercel.app/api?username=spatelpatidar&amp;show_icons=true&amp;theme=github_dark&amp;hide_border=true&amp;bg_color=1c1e21&amp;title_color=58a6ff&amp;icon_color=8b949e&amp;text_color=c9d1d9&amp;border_radius=16" alt="GitHub stats">
+<!-- ================= HERO ================= -->
+<section id="home" class="hero" style="margin-top:0">
+  <div class="banner rv">
+    <img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:34d399,25:38bdf8,50:6366f1,75:a855f7,100:ff6fd8&amp;height=230&amp;section=header&amp;text=Shailendra%20Kumar&amp;fontSize=62&amp;fontColor=ffffff&amp;fontAlignY=42&amp;desc=🚀%20Backend%20Developer%20%20•%20%20Ruby%20on%20Rails%20%20•%20%20Flutter%20Enthusiast%20🚀&amp;descAlignY=65&amp;descSize=17&amp;descColor=ffffff&amp;animation=fadeIn" alt="Shailendra Kumar header" width="100%">
   </div>
-  <div class="card">
-    <h3>Top Languages</h3>
-    <img src="https://github-readme-stats-eight-flame.vercel.app/api/top-langs/?username=spatelpatidar&amp;langs_count=10&amp;theme=github_dark&amp;hide_border=true&amp;layout=compact&amp;bg_color=1c1e21&amp;title_color=58a6ff&amp;text_color=c9d1d9&amp;border_radius=16" alt="Top languages">
-  </div>
-  <div class="card">
-    <h3>Streak Stats</h3>
-    <img src="https://streak-stats.demolab.com/?user=spatelpatidar&amp;hide_border=true&amp;background=1c1e21&amp;ring=58a6ff&amp;fire=f78166&amp;currStreakLabel=58a6ff&amp;sideLabels=8b949e&amp;dates=8b949e&amp;currStreakNum=f0f6fc&amp;sideNums=f0f6fc&amp;border_radius=16" alt="Streak stats">
-  </div>
-  <div class="card">
-    <h3>Trophies</h3>
-    <img src="https://github-trophies.devomb.com/?username=spatelpatidar&amp;theme=tokyonight&amp;row=2&amp;column=4&amp;no-frame=true" alt="Trophies">
-  </div>
-</div>
 
-<div class="card wide-card">
-  <h3>Contribution Graph</h3>
-  <img src="https://arshbibhaw-github-activity-graph.vercel.app/graph?username=spatelpatidar&amp;bg_color=1c1e21&amp;color=58a6ff&amp;line=58a6ff&amp;point=79c0ff&amp;area=true&amp;hide_border=true&amp;border_radius=16&amp;custom_title=Shailendra's+Contribution+Graph" alt="Contribution graph">
-</div>
-
-<h2>🐍 Swallowing My Contributions</h2>
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-light.svg">
-  <img alt="Contribution snake" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-dark.svg" width="95%">
-</picture>
-
-<hr>
-
-<h2>📊 Stats Gallery</h2>
-<p>Every card below is regenerated by GitHub Actions on each deploy.</p>
-
-<div class="card wide-card">
-  <h3>Commit Calendar</h3>
-  <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.isocalendar.fullyear.svg" alt="Commit calendar">
-</div>
-
-<!-- Two balanced columns: card heights differ a lot (124px to 739px),
-     so each column stacks cards and the last card stretches to line up the bottoms -->
-<div class="cols">
-  <div class="col">
-    <div class="card">
-      <h3>GitHub Overview</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/github-metrics.svg" alt="GitHub overview">
-    </div>
-    <div class="card">
-      <h3>Languages</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.languages.svg" alt="Languages">
-    </div>
-    <div class="card">
-      <h3>Lines of Code</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.lines.svg" alt="Lines of code">
-    </div>
-    <div class="card">
-      <h3>Repository Traffic</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.traffic.svg" alt="Repository traffic">
-    </div>
-    <div class="card">
-      <h3>Achievements (Detailed)</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.detailed.svg" alt="Achievements detailed">
-    </div>
-  </div>
-  <div class="col">
-    <div class="card">
-      <h3>Achievements</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.svg" alt="Achievements">
-    </div>
-    <div class="card">
-      <h3>Followers &amp; Following</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.people.svg" alt="People">
-    </div>
-    <div class="card">
-      <h3>Starred Repositories</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.stars.svg" alt="Starred repositories">
-    </div>
-    <div class="card">
-      <h3>Pinned Repositories</h3>
-      <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.pinned.svg" alt="Pinned repositories">
-    </div>
-  </div>
-</div>
-
-<h3>Project Cards</h3>
-<div class="grid">
-  <div class="card"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo.svg" alt="respondo"></div>
-  <div class="card"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-graphql.svg" alt="respondo-graphql"></div>
-  <div class="card"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-grpc.svg" alt="respondo-grpc"></div>
-  <div class="card"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.spatelpatidar.svg" alt="spatelpatidar"></div>
-</div>
-
-<div class="card wide-card">
-<details>
-  <summary>💻 Click here to see my 3D contribution bars ⬇️</summary>
+  <div class="status rv"><i></i> SYSTEM ONLINE · <span id="clock">--:--:--</span> LOCAL</div>
   <br>
-  <a href="https://github.com/spatelpatidar">
+  <h1 class="glitch rv" data-t="Shailendra Kumar">Shailendra Kumar</h1>
+  <div class="role rv">Backend Developer &nbsp;/&nbsp; Ruby on Rails &nbsp;/&nbsp; Flutter</div>
+
+  <div class="typing rv">
+    <a href="https://git.io/typing-svg" target="_blank" rel="noopener noreferrer"><img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&amp;weight=600&amp;size=22&amp;pause=1000&amp;color=38BDF8&amp;center=true&amp;vCenter=true&amp;width=650&amp;lines=Building+clean+Rails+APIs+%F0%9F%9A%80;Shipping+gems+%26+pub.dev+packages+%F0%9F%93%A6;Exploring+Flutter%2C+Rust+%26+Go+%F0%9F%94%A5;Test-driven%2C+performance-obsessed+%E2%9A%A1;3%2B+years+of+backend+craft+%F0%9F%92%99" alt="typing animation" style="margin:0 auto"></a>
+  </div>
+
+  <div class="cta rv">
+    <a class="btn primary" href="#packages">⚡ View Packages</a>
+    <a class="btn" href="https://github.com/spatelpatidar" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+    <a class="btn" href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+    <a class="btn" href="mailto:shailendrapatidar00@gmail.com">✉ Contact</a>
+  </div>
+
+  <div class="counters rv">
+    <div class="card tilt counter"><b data-count="3" data-suffix="+">0</b><span>Years in Rails</span><div class="glare"></div></div>
+    <div class="card tilt counter"><b data-count="5">0</b><span>Published Packages</span><div class="glare"></div></div>
+    <div class="card tilt counter"><b data-count="3000" data-suffix="+">0</b><span>Organic Downloads</span><div class="glare"></div></div>
+    <div class="card tilt counter"><b data-count="3">0</b><span>Gems In Progress</span><div class="glare"></div></div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about">
+  <h2 class="sec-title rv">About Me</h2>
+  <div class="card term rv">
+    <div class="term-bar"><div class="dots"><i></i><i></i><i></i></div><span>shailendra@github:~/about.sh</span></div>
+    <div class="term-body">
+      <div>
+        <div class="prompt">$ whoami</div>
+        <p style="margin-top:10px">Hi! I'm <b>Shailendra</b>, a backend developer who lives and breathes <b>Ruby on Rails</b>, with a growing love for <b>Flutter</b>.</p>
+        <p>I care about clean APIs, test-driven code, and shipping tools that solve real problems — even the small ones.</p>
+        <div class="prompt">$ cat status.log</div>
+        <ul class="log">
+          <li>🔭&nbsp; <b>Backend Developer</b> with <b>3+ years</b> in Ruby on Rails</li>
+          <li>🌱&nbsp; Currently learning <b>Flutter, Rust, GraphQL, Go</b></li>
+          <li>📦&nbsp; Published <a href="https://rubygems.org/gems/respondo" target="_blank" rel="noopener noreferrer"><b>respondo</b></a> — 1400+ organic downloads on RubyGems</li>
+          <li>🚀&nbsp; Published <a href="https://rubygems.org/gems/auditron" target="_blank" rel="noopener noreferrer"><b>auditron</b></a> — tracks who changed what on any ActiveRecord model, 400+ downloads</li>
+          <li>📦&nbsp; Published <a href="https://pub.dev/packages/app_snackbar" target="_blank" rel="noopener noreferrer"><b>app_snackbar</b></a> — 300+ organic downloads on pub.dev</li>
+          <li>🚀&nbsp; Published <a href="https://pub.dev/packages/swift_field" target="_blank" rel="noopener noreferrer"><b>swift_field</b></a> — zero-dependency Flutter form widgets, pin fields, searchable dropdowns</li>
+          <li>💬&nbsp; Ask me about <b>Ruby on Rails, REST APIs, PostgreSQL, Firebase</b></li>
+        </ul>
+        <div class="prompt">$ _</div>
+      </div>
+      <div><img class="gif" src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif" alt="coding gif"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FIND ME ================= -->
+<section id="find">
+  <h2 class="sec-title rv">Find Me Here</h2>
+  <div class="card tilt rv">
+    <p class="badges">
+      <a href="https://github.com/spatelpatidar"><img src="https://img.shields.io/badge/GitHub-%23181717.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" alt="GitHub"></a>
+      <a href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?style=for-the-badge&amp;logo=linkedin&amp;logoColor=white" alt="LinkedIn"></a>
+      <a href="mailto:shailendrapatidar00@gmail.com"><img src="https://img.shields.io/badge/Gmail-%23EA4335.svg?style=for-the-badge&amp;logo=gmail&amp;logoColor=white" alt="Gmail"></a>
+      <a href="https://rubygems.org/profiles/spatelpatidar" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/RubyGems-%23E9573F.svg?style=for-the-badge&amp;logo=rubygems&amp;logoColor=white" alt="RubyGems"></a>
+      <a href="https://pub.dev/publishers" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/pub.dev-%230175C2.svg?style=for-the-badge&amp;logo=dart&amp;logoColor=white" alt="pub.dev"></a>
+    </p>
+    <div class="glare"></div>
+  </div>
+</section>
+
+<!-- ================= STACK ================= -->
+<section id="stack">
+  <h2 class="sec-title rv">Tech Stack</h2>
+  <div class="card term tilt rv">
+    <div class="term-bar"><div class="dots"><i></i><i></i><i></i></div><span>shailendra@github:~/tech-stack.sh</span></div>
+    <div class="stack-body">
+    <div class="tech-row"><b>🌸 Languages</b>
+      <p class="badges">
+        <img src="https://img.shields.io/badge/Ruby-ff6fd8?style=for-the-badge&amp;logo=ruby&amp;logoColor=white" alt="Ruby">
+        <img src="https://img.shields.io/badge/Dart-38bdf8?style=for-the-badge&amp;logo=dart&amp;logoColor=white" alt="Dart">
+        <img src="https://img.shields.io/badge/Python-facc15?style=for-the-badge&amp;logo=python&amp;logoColor=black" alt="Python">
+        <img src="https://img.shields.io/badge/Java-f97316?style=for-the-badge&amp;logo=openjdk&amp;logoColor=white" alt="Java">
+        <img src="https://img.shields.io/badge/C%2B%2B-a855f7?style=for-the-badge&amp;logo=cplusplus&amp;logoColor=white" alt="C++">
+        <img src="https://img.shields.io/badge/C-6366f1?style=for-the-badge&amp;logo=c&amp;logoColor=white" alt="C">
+      </p>
+    </div>
+    <div class="tech-row"><b>🚀 Backend &amp; Frameworks</b>
+      <p class="badges">
+        <img src="https://img.shields.io/badge/Ruby%20on%20Rails-34d399?style=for-the-badge&amp;logo=rubyonrails&amp;logoColor=white" alt="Rails">
+        <img src="https://img.shields.io/badge/Flutter-38bdf8?style=for-the-badge&amp;logo=flutter&amp;logoColor=white" alt="Flutter">
+        <img src="https://img.shields.io/badge/GraphQL-ef4444?style=for-the-badge&amp;logo=graphql&amp;logoColor=white" alt="GraphQL">
+      </p>
+    </div>
+    <div class="tech-row"><b>🗄️ Databases &amp; Backend Services</b>
+      <p class="badges">
+        <img src="https://img.shields.io/badge/PostgreSQL-38bdf8?style=for-the-badge&amp;logo=postgresql&amp;logoColor=white" alt="PostgreSQL">
+        <img src="https://img.shields.io/badge/MySQL-f97316?style=for-the-badge&amp;logo=mysql&amp;logoColor=white" alt="MySQL">
+        <img src="https://img.shields.io/badge/SQLite-6366f1?style=for-the-badge&amp;logo=sqlite&amp;logoColor=white" alt="SQLite">
+        <img src="https://img.shields.io/badge/Redis-ef4444?style=for-the-badge&amp;logo=redis&amp;logoColor=white" alt="Redis">
+        <img src="https://img.shields.io/badge/Firebase-fbbf24?style=for-the-badge&amp;logo=firebase&amp;logoColor=black" alt="Firebase">
+        <img src="https://img.shields.io/badge/Supabase-34d399?style=for-the-badge&amp;logo=supabase&amp;logoColor=white" alt="Supabase">
+      </p>
+    </div>
+    <div class="tech-row"><b>🎨 Frontend</b>
+      <p class="badges">
+        <img src="https://img.shields.io/badge/HTML5-ff6fd8?style=for-the-badge&amp;logo=html5&amp;logoColor=white" alt="HTML5">
+        <img src="https://img.shields.io/badge/CSS3-38bdf8?style=for-the-badge&amp;logo=css3&amp;logoColor=white" alt="CSS3">
+        <img src="https://img.shields.io/badge/JavaScript-a855f7?style=for-the-badge&amp;logo=javascript&amp;logoColor=white" alt="JavaScript">
+      </p>
+    </div>
+    <div class="tech-row"><b>🛠️ DevOps &amp; Tools</b>
+      <p class="badges">
+        <img src="https://img.shields.io/badge/Docker-38bdf8?style=for-the-badge&amp;logo=docker&amp;logoColor=white" alt="Docker">
+        <img src="https://img.shields.io/badge/Git-f97316?style=for-the-badge&amp;logo=git&amp;logoColor=white" alt="Git">
+        <img src="https://img.shields.io/badge/GitHub-facc15?style=for-the-badge&amp;logo=github&amp;logoColor=black" alt="GitHub">
+        <img src="https://img.shields.io/badge/GitLab-ef4444?style=for-the-badge&amp;logo=gitlab&amp;logoColor=white" alt="GitLab">
+        <img src="https://img.shields.io/badge/Linux-a855f7?style=for-the-badge&amp;logo=linux&amp;logoColor=white" alt="Linux">
+        <img src="https://img.shields.io/badge/VS%20Code-38bdf8?style=for-the-badge&amp;logo=visualstudiocode&amp;logoColor=white" alt="VS Code">
+        <img src="https://img.shields.io/badge/Postman-f97316?style=for-the-badge&amp;logo=postman&amp;logoColor=white" alt="Postman">
+        <img src="https://img.shields.io/badge/Cloudflare-fbbf24?style=for-the-badge&amp;logo=cloudflare&amp;logoColor=black" alt="Cloudflare">
+        <img src="https://img.shields.io/badge/Swagger-34d399?style=for-the-badge&amp;logo=swagger&amp;logoColor=white" alt="Swagger">
+        <img src="https://img.shields.io/badge/Render-38bdf8?style=for-the-badge&amp;logo=render&amp;logoColor=white" alt="Render">
+        <img src="https://img.shields.io/badge/Railway-6366f1?style=for-the-badge&amp;logo=railway&amp;logoColor=white" alt="Railway">
+      </p>
+    </div>
+    <div class="tech-row" style="margin-bottom:0"><b>📚 Currently Learning</b>
+      <p class="badges">
+        <img src="https://img.shields.io/badge/Rust-ff6fd8?style=for-the-badge&amp;logo=rust&amp;logoColor=white" alt="Rust">
+        <img src="https://img.shields.io/badge/Go-38bdf8?style=for-the-badge&amp;logo=go&amp;logoColor=white" alt="Go">
+        <img src="https://img.shields.io/badge/GraphQL-a855f7?style=for-the-badge&amp;logo=graphql&amp;logoColor=white" alt="GraphQL">
+        <img src="https://img.shields.io/badge/React-34d399?style=for-the-badge&amp;logo=react&amp;logoColor=white" alt="React">
+      </p>
+    </div>
+    </div>
+    <div class="glare"></div>
+  </div>
+</section>
+
+<!-- ================= PACKAGES ================= -->
+<section id="packages">
+  <h2 class="sec-title rv">Published Packages &amp; Gems</h2>
+  <div class="pkgs">
+    <div class="card tilt pkg rv">
+      <div class="top"><h4><a href="https://rubygems.org/gems/respondo" target="_blank" rel="noopener noreferrer">respondo</a></h4><span class="tag ruby">Ruby</span></div>
+      <p>Standardizes JSON API responses across Rails apps — success, data, message &amp; meta fields.</p>
+      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/gem/dt/respondo?label=Downloads&amp;style=social" alt="respondo downloads"></div>
+      <div class="glare"></div>
+    </div>
+    <div class="card tilt pkg rv">
+      <div class="top"><h4><a href="https://rubygems.org/gems/respondo-graphql" target="_blank" rel="noopener noreferrer">respondo-graphql</a></h4><span class="tag ruby">Ruby</span></div>
+      <p>Consistent GraphQL-spec responses for Rails controllers — data, errors, extensions.</p>
+      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/gem/dt/respondo-graphql?label=Downloads&amp;style=social" alt="respondo-graphql downloads"></div>
+      <div class="glare"></div>
+    </div>
+    <div class="card tilt pkg rv">
+      <div class="top"><h4><a href="https://rubygems.org/gems/auditron" target="_blank" rel="noopener noreferrer">auditron</a></h4><span class="tag ruby">Ruby</span></div>
+      <p>Tracks who changed what on any ActiveRecord model — storing only changed fields, not full snapshots.</p>
+      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/gem/dt/auditron?label=Downloads&amp;style=social" alt="auditron downloads"></div>
+      <div class="glare"></div>
+    </div>
+    <div class="card tilt pkg rv">
+      <div class="top"><h4><a href="https://pub.dev/packages/app_snackbar" target="_blank" rel="noopener noreferrer">app_snackbar</a></h4><span class="tag dart">Dart</span></div>
+      <p>Lightweight Flutter snackbar utility for clean, customizable in-app notifications.</p>
+      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/pub/dm/app_snackbar?label=Downloads&amp;style=social" alt="app_snackbar downloads"></div>
+      <div class="glare"></div>
+    </div>
+    <div class="card tilt pkg rv">
+      <div class="top"><h4><a href="https://pub.dev/packages/swift_field" target="_blank" rel="noopener noreferrer">swift_field</a></h4><span class="tag dart">Dart</span></div>
+      <p>Production-grade Flutter form widgets — text fields, password fields, searchable dropdowns &amp; gradient buttons. Zero dependencies.</p>
+      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/pub/dm/swift_field?label=Downloads&amp;style=social" alt="swift_field downloads"></div>
+      <div class="glare"></div>
+    </div>
+  </div>
+
+  <div class="card tilt wide-card rv" style="margin-top:26px">
+    <h3>🔨 In Progress — Ruby Gems</h3>
+    <div class="wip">
+      <div class="wip-item">
+        <strong><a href="https://github.com/spatelpatidar/idempo">idempo</a></strong>
+        <div>Opt-in idempotency handling for Rails controllers, ActiveJob classes, and webhook handlers.<div class="meter" style="margin-top:8px"><i data-w="90"></i></div></div>
+        <small>🚧 Built · Not published</small>
+      </div>
+      <div class="wip-item">
+        <strong><a href="https://github.com/spatelpatidar/param_guard">param_guard</a></strong>
+        <div>Strong parameter validation and sanitization layer for Rails controllers.<div class="meter" style="margin-top:8px"><i data-w="60"></i></div></div>
+        <small>🚧 Building · Not published</small>
+      </div>
+      <div class="wip-item">
+        <strong>authify</strong>
+        <div>JWT &amp; session-based authentication solution for Rails APIs.<div class="meter" style="margin-top:8px"><i data-w="30"></i></div></div>
+        <small>📄 Documented · In development</small>
+      </div>
+    </div>
+    <div class="glare"></div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section id="stats">
+  <h2 class="sec-title rv">GitHub Stats</h2>
+
+  <div class="card wide-card rv">
+    <h3>3D Contribution Graph</h3>
+    <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/profile-3d-contrib/profile-night-rainbow.svg" alt="3D contribution graph">
+  </div>
+
+  <div class="grid">
+    <div class="card tilt rv">
+      <h3>GitHub Stats</h3>
+      <img src="https://github-readme-stats-eight-flame.vercel.app/api?username=spatelpatidar&amp;show_icons=true&amp;theme=github_dark&amp;hide_border=true&amp;bg_color=1c1e21&amp;title_color=58a6ff&amp;icon_color=8b949e&amp;text_color=c9d1d9&amp;border_radius=16" alt="GitHub stats">
+      <div class="glare"></div>
+    </div>
+    <div class="card tilt rv">
+      <h3>Top Languages</h3>
+      <img src="https://github-readme-stats-eight-flame.vercel.app/api/top-langs/?username=spatelpatidar&amp;langs_count=10&amp;theme=github_dark&amp;hide_border=true&amp;layout=compact&amp;bg_color=1c1e21&amp;title_color=58a6ff&amp;text_color=c9d1d9&amp;border_radius=16" alt="Top languages">
+      <div class="glare"></div>
+    </div>
+    <div class="card tilt rv">
+      <h3>Streak Stats</h3>
+      <img src="https://streak-stats.demolab.com/?user=spatelpatidar&amp;hide_border=true&amp;background=1c1e21&amp;ring=58a6ff&amp;fire=f78166&amp;currStreakLabel=58a6ff&amp;sideLabels=8b949e&amp;dates=8b949e&amp;currStreakNum=f0f6fc&amp;sideNums=f0f6fc&amp;border_radius=16" alt="Streak stats">
+      <div class="glare"></div>
+    </div>
+    <div class="card tilt rv">
+      <h3>Trophies</h3>
+      <img src="https://github-trophies.devomb.com/?username=spatelpatidar&amp;theme=tokyonight&amp;row=2&amp;column=4&amp;no-frame=true" alt="Trophies">
+      <div class="glare"></div>
+    </div>
+  </div>
+
+  <div class="card wide-card rv">
+    <h3>Contribution Graph</h3>
+    <img src="https://arshbibhaw-github-activity-graph.vercel.app/graph?username=spatelpatidar&amp;bg_color=1c1e21&amp;color=58a6ff&amp;line=58a6ff&amp;point=79c0ff&amp;area=true&amp;hide_border=true&amp;border_radius=16&amp;custom_title=Shailendra's+Contribution+Graph" alt="Contribution graph">
+  </div>
+
+  <h3 class="sub rv"><b>🐍</b> Swallowing My Contributions</h3>
+  <div class="card wide-card rv">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native&amp;dark=true">
-      <source media="(prefers-color-scheme: light)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native">
-      <img alt="3D contribution bars" src="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native">
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-light.svg">
+      <img alt="Contribution snake" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-dark.svg" width="95%">
     </picture>
-  </a>
-</details>
+  </div>
+
+  <h2 class="sec-title rv" style="margin-top:64px">Stats Gallery</h2>
+  <p class="note rv">&gt; every card below is regenerated by GitHub Actions on each deploy.</p>
+
+  <div class="card wide-card rv">
+    <h3>Commit Calendar</h3>
+    <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.isocalendar.fullyear.svg" alt="Commit calendar">
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <div class="card rv"><h3>GitHub Overview</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/github-metrics.svg" alt="GitHub overview"></div>
+      <div class="card rv"><h3>Languages</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.languages.svg" alt="Languages"></div>
+      <div class="card rv"><h3>Lines of Code</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.lines.svg" alt="Lines of code"></div>
+      <div class="card rv"><h3>Repository Traffic</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.traffic.svg" alt="Repository traffic"></div>
+      <div class="card rv"><h3>Achievements (Detailed)</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.detailed.svg" alt="Achievements detailed"></div>
+    </div>
+    <div class="col">
+      <div class="card rv"><h3>Achievements</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.svg" alt="Achievements"></div>
+      <div class="card rv"><h3>Followers &amp; Following</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.people.svg" alt="People"></div>
+      <div class="card rv"><h3>Starred Repositories</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.stars.svg" alt="Starred repositories"></div>
+      <div class="card rv"><h3>Pinned Repositories</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.pinned.svg" alt="Pinned repositories"></div>
+    </div>
+  </div>
+
+  <h3 class="sub rv"><b>▸</b> Project Cards</h3>
+  <div class="grid">
+    <div class="card tilt rv"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo.svg" alt="respondo"><div class="glare"></div></div>
+    <div class="card tilt rv"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-graphql.svg" alt="respondo-graphql"><div class="glare"></div></div>
+    <div class="card tilt rv"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-grpc.svg" alt="respondo-grpc"><div class="glare"></div></div>
+    <div class="card tilt rv"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.spatelpatidar.svg" alt="spatelpatidar"><div class="glare"></div></div>
+  </div>
+
+  <div class="card wide-card rv">
+    <details>
+      <summary>💻 Click here to see my 3D contribution bars ⬇️</summary>
+      <br>
+      <a href="https://github.com/spatelpatidar">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native&amp;dark=true">
+          <source media="(prefers-color-scheme: light)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native">
+          <img alt="3D contribution bars" src="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native">
+        </picture>
+      </a>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="views"><img src="https://komarev.com/ghpvc/?username=spatelpatidar&amp;style=for-the-badge&amp;color=1f6feb&amp;labelColor=1c1e21&amp;label=PROFILE+VIEWS" alt="Profile views"></div>
+  <img class="wave" src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:ff6fd8,25:a855f7,50:6366f1,75:38bdf8,100:34d399&amp;height=120&amp;section=footer&amp;text=always%20learning%2C%20always%20building%20♥&amp;fontSize=20&amp;fontColor=ffffff&amp;animation=fadeIn" alt="footer">
+</footer>
+
 </div>
 
-<hr>
-
-<img src="https://komarev.com/ghpvc/?username=spatelpatidar&amp;style=for-the-badge&amp;color=1f6feb&amp;labelColor=1c1e21&amp;label=PROFILE+VIEWS" alt="Profile views">
-
-<br><br>
-
-<img src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:ff6fd8,25:a855f7,50:6366f1,75:38bdf8,100:34d399&amp;height=120&amp;section=footer&amp;text=always%20learning%2C%20always%20building%20♥&amp;fontSize=20&amp;fontColor=ffffff&amp;animation=fadeIn" width="100%" alt="footer">
-
-</div>
 <script>
-  // Show the GitHub button only when the visitor did NOT come from GitHub.
-  // Visitors from GitHub are detected by ?utm_source=github, or by the referrer as a fallback.
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- GitHub button (shown only if visitor did NOT come from GitHub) ---------- */
   (function () {
-    var btn = document.getElementById('gh-btn');
-    if (!btn) return;
+    var btn = document.getElementById('gh-btn'); if (!btn) return;
     var fromGitHub = false;
     try {
       var src = (new URLSearchParams(location.search).get('utm_source') || '').toLowerCase();
@@ -447,12 +657,402 @@
         var host = new URL(document.referrer).hostname;
         if (host === 'github.com' || host.slice(-11) === '.github.com') fromGitHub = true;
       }
-      // Remember for this tab, so a refresh without the parameter keeps the button hidden
       if (fromGitHub) sessionStorage.setItem('from_github', '1');
       else if (sessionStorage.getItem('from_github') === '1') fromGitHub = true;
     } catch (e) {}
     if (!fromGitHub) btn.hidden = false;
   })();
+
+  /* ---------- QED background: charged particles, photon exchange, vacuum fluctuations ---------- */
+  var mouse = { x: -999, y: -999 };
+  (function () {
+    var canvas = document.getElementById('bg');
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    var POSITIVE_HUE = 210, NEGATIVE_HUE = 340, PHOTON_HUE = 46;
+    var COULOMB_K = 2400, SOFTENING = 22 * 22, DAMPING = 0.985, THERMAL_JITTER = 0.06, MAX_SPEED = 1.8;
+    var POINTER_RADIUS = 190, POINTER_STRENGTH = 70, FLOW_SPEED = 0.5, FLOW_BLEND = 0.025;
+    var DESKTOP_FPS = 60, MOBILE_FPS = 40, MOBILE_BREAKPOINT = 768, MAX_DPR = 2;
+    var MIN_AREA = 320 * 560, MAX_AREA = 1920 * 1080;
+    var MIN_PARTICLES = 24, MAX_PARTICLES = 120, MIN_LINKS = 6, MAX_LINKS = 10;
+    var MAX_VIRTUAL_MIN = 26, MAX_VIRTUAL_MAX = 64;
+    var RESIZE_DEBOUNCE_MS = 150, DIMENSION_STABLE_PX = 4;
+
+    function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+    var width = window.innerWidth, height = window.innerHeight;
+    var dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+    var cores = navigator.hardwareConcurrency || 4;
+    var coreFactor = cores <= 4 ? 0.75 : 1;
+
+    var maxLinksPerParticle = MIN_LINKS, maxVirtualParticles = MAX_VIRTUAL_MIN;
+    var connectionDistance = 90, forceRadius = 130, virtualPairSpawnRate = 0.22, liveliness = 1.4;
+    var isMobile = width <= MOBILE_BREAKPOINT;
+    var frameInterval = 1000 / (isMobile ? MOBILE_FPS : DESKTOP_FPS);
+    var dt = frameInterval / (1000 / 60);
+
+    function computeDensity(w, h) {
+      var t = clamp((w * h - MIN_AREA) / (MAX_AREA - MIN_AREA), 0, 1);
+      return {
+        particleCount: Math.max(16, Math.round((MIN_PARTICLES + t * (MAX_PARTICLES - MIN_PARTICLES)) * coreFactor)),
+        maxLinks: Math.round(MIN_LINKS + t * (MAX_LINKS - MIN_LINKS)),
+        maxVirtual: Math.round(MAX_VIRTUAL_MIN + t * (MAX_VIRTUAL_MAX - MAX_VIRTUAL_MIN)),
+        connectionDistance: clamp(Math.min(w, h) * 0.19, 65, 200),
+        forceRadius: clamp(Math.min(w, h) * 0.26, 100, 260),
+        spawnRate: 0.22 + t * 0.2,
+        liveliness: 1.4 - 0.4 * t
+      };
+    }
+
+    // "Observer effect": pointer gently pushes particles away
+    var pointerX = null, pointerY = null, pointerActive = false;
+    function onPointer(e) { pointerX = e.clientX; pointerY = e.clientY; pointerActive = true; }
+    function clearPointer() { pointerActive = false; }
+
+    var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // Pre-rendered glow sprites (no shadowBlur)
+    function createGlowSprite(hue) {
+      var size = 128, sprite = document.createElement('canvas');
+      sprite.width = size; sprite.height = size;
+      var sctx = sprite.getContext('2d');
+      var g = sctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+      g.addColorStop(0, 'hsla(' + hue + ', 100%, 82%, 0.55)');
+      g.addColorStop(0.5, 'hsla(' + hue + ', 100%, 72%, 0.18)');
+      g.addColorStop(1, 'hsla(' + hue + ', 100%, 70%, 0)');
+      sctx.fillStyle = g; sctx.fillRect(0, 0, size, size);
+      return sprite;
+    }
+    var spritePositive = createGlowSprite(POSITIVE_HUE), spriteNegative = createGlowSprite(NEGATIVE_HUE);
+
+    var activeParticles = [], particlePool = [], simTime = 0;
+
+    function Particle(isVirtual) { this.isVirtual = !!isVirtual; this.reset(); }
+    Particle.prototype.reset = function (x, y, charge) {
+      this.x = x !== undefined ? x : Math.random() * width;
+      this.y = y !== undefined ? y : Math.random() * height;
+      this.vx = (Math.random() - 0.5) * 0.2; this.vy = (Math.random() - 0.5) * 0.2;
+      this.ax = 0; this.ay = 0;
+      this.charge = charge !== undefined ? charge : (Math.random() > 0.5 ? 1 : -1);
+      this.hue = this.charge > 0 ? POSITIVE_HUE : NEGATIVE_HUE;
+      this.radius = this.isVirtual ? 1.1 : 1.1 + Math.random() * 1.6;
+      this.auraMax = this.isVirtual ? 0 : this.radius + 9;
+      this.auraPulse = Math.random() * Math.PI * 2;
+      this.auraRadius = this.auraMax * 0.75;
+      this.life = this.isVirtual ? 0.4 + Math.random() * 0.5 : 1;
+      this.inUse = true;
+      return this;
+    };
+    Particle.prototype.applyForces = function () {
+      if (this.isVirtual) return;
+      var ax = 0, ay = 0, frSq = forceRadius * forceRadius;
+      for (var k = 0; k < activeParticles.length; k++) {
+        var o = activeParticles[k];
+        if (o === this || !o.inUse || o.isVirtual) continue;
+        var dx = o.x - this.x, dy = o.y - this.y, distSq = dx * dx + dy * dy;
+        if (distSq > frSq || distSq < 1) continue;
+        var r = Math.sqrt(distSq);
+        var f = (this.charge * o.charge * COULOMB_K) / (distSq + SOFTENING); // softened Coulomb
+        ax -= (dx / r) * f; ay -= (dy / r) * f;
+      }
+      if (pointerActive && pointerX !== null) {
+        var pdx = this.x - pointerX, pdy = this.y - pointerY, pSq = pdx * pdx + pdy * pdy;
+        if (pSq < POINTER_RADIUS * POINTER_RADIUS) {
+          var pr = Math.sqrt(pSq) || 1, t = 1 - pr / POINTER_RADIUS, push = POINTER_STRENGTH * t * t;
+          ax += (pdx / pr) * push; ay += (pdy / pr) * push;
+        }
+      }
+      this.ax = ax; this.ay = ay;
+    };
+    Particle.prototype.integrate = function () {
+      this.vx += this.ax * dt; this.vy += this.ay * dt;
+      var damp = Math.pow(DAMPING, dt);
+      this.vx *= damp; this.vy *= damp;
+      var jitter = THERMAL_JITTER * liveliness * Math.sqrt(dt);
+      this.vx += (Math.random() - 0.5) * jitter; this.vy += (Math.random() - 0.5) * jitter;
+      // ambient flow field, applied as steering toward a target velocity
+      var phase = this.charge > 0 ? 0 : Math.PI;
+      var tx = Math.sin(this.y * 0.006 + simTime * 0.015 + phase) * FLOW_SPEED * liveliness;
+      var ty = Math.cos(this.x * 0.006 + simTime * 0.012 + phase) * FLOW_SPEED * liveliness;
+      var blend = 1 - Math.pow(1 - FLOW_BLEND, dt);
+      this.vx += (tx - this.vx) * blend; this.vy += (ty - this.vy) * blend;
+      var speed = Math.hypot(this.vx, this.vy);
+      if (speed > MAX_SPEED) { var sc = MAX_SPEED / speed; this.vx *= sc; this.vy *= sc; }
+      this.x += this.vx * dt; this.y += this.vy * dt;
+      if (this.x < this.radius) { this.x = this.radius; this.vx = Math.abs(this.vx) * 0.9; }
+      else if (this.x > width - this.radius) { this.x = width - this.radius; this.vx = -Math.abs(this.vx) * 0.9; }
+      if (this.y < this.radius) { this.y = this.radius; this.vy = Math.abs(this.vy) * 0.9; }
+      else if (this.y > height - this.radius) { this.y = height - this.radius; this.vy = -Math.abs(this.vy) * 0.9; }
+      this.auraPulse += 0.035 * dt;
+      this.auraRadius = this.auraMax * (0.62 + Math.sin(this.auraPulse) * 0.38);
+      if (this.isVirtual) { this.life -= 0.012 * dt; if (this.life <= 0) this.inUse = false; }
+    };
+    Particle.prototype.draw = function () {
+      if (!this.isVirtual && this.auraRadius > 0.5) {
+        var sprite = this.charge > 0 ? spritePositive : spriteNegative, size = this.auraRadius * 2;
+        ctx.drawImage(sprite, this.x - this.auraRadius, this.y - this.auraRadius, size, size);
+      }
+      var alpha = this.isVirtual ? this.life * 0.9 : 0.82 + Math.sin(this.auraPulse * 1.3) * 0.18;
+      var light = this.isVirtual ? 72 : 80;
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'hsla(' + this.hue + ', 100%, ' + light + '%, ' + alpha + ')';
+      ctx.fill();
+    };
+
+    function getParticle(isVirtual) {
+      for (var i = 0; i < particlePool.length; i++) {
+        var p = particlePool[i];
+        if (!p.inUse && p.isVirtual === !!isVirtual) return p.reset();
+      }
+      var np = new Particle(isVirtual); particlePool.push(np); return np;
+    }
+    function init(n) { activeParticles.length = 0; particlePool.length = 0; for (var i = 0; i < n; i++) activeParticles.push(getParticle(false)); }
+    function countVirtual() { var c = 0; for (var i = 0; i < activeParticles.length; i++) if (activeParticles[i].isVirtual) c++; return c; }
+    function spawnVirtualPair() {
+      if (countVirtual() >= maxVirtualParticles) return;
+      var x = Math.random() * width, y = Math.random() * height;
+      var p1 = getParticle(true).reset(x, y, 1);
+      var p2 = getParticle(true).reset(x + Math.random() * 10 - 5, y + Math.random() * 10 - 5, -1);
+      activeParticles.push(p1, p2);
+    }
+    function adjustParticleCount(target) {
+      var real = 0, i;
+      for (i = 0; i < activeParticles.length; i++) if (!activeParticles[i].isVirtual) real++;
+      var diff = target - real;
+      if (diff > 0) { for (i = 0; i < diff; i++) activeParticles.push(getParticle(false)); }
+      else if (diff < 0) {
+        var rem = -diff;
+        for (i = activeParticles.length - 1; i >= 0 && rem > 0; i--) {
+          if (!activeParticles[i].isVirtual) { activeParticles[i].inUse = false; activeParticles.splice(i, 1); rem--; }
+        }
+      }
+    }
+
+    // Photon-exchange lines: bounded-degree nearest-neighbour graph
+    var linkCandidates = [], linkDegree = new Map();
+    function drawPhotonLine(a, b, dist) {
+      var mx = (a.x + b.x) / 2 + (Math.random() - 0.5) * 30, my = (a.y + b.y) / 2 + (Math.random() - 0.5) * 30;
+      var t = 1 - dist / connectionDistance, alpha = t * t * 0.85;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(mx, my, b.x, b.y);
+      ctx.lineWidth = 2.4; ctx.strokeStyle = 'hsla(' + PHOTON_HUE + ', 95%, 70%, ' + (alpha * 0.22) + ')'; ctx.stroke();
+      ctx.lineWidth = 1; ctx.strokeStyle = 'hsla(' + PHOTON_HUE + ', 100%, 62%, ' + alpha + ')'; ctx.stroke();
+    }
+    function drawPhotonLines() {
+      linkCandidates.length = 0;
+      var cdSq = connectionDistance * connectionDistance, i, j;
+      for (i = 0; i < activeParticles.length; i++) {
+        var p1 = activeParticles[i]; if (!p1.inUse || p1.isVirtual) continue;
+        for (j = i + 1; j < activeParticles.length; j++) {
+          var p2 = activeParticles[j]; if (!p2.inUse || p2.isVirtual) continue;
+          var dx = p1.x - p2.x, dy = p1.y - p2.y, dSq = dx * dx + dy * dy;
+          if (dSq < cdSq) linkCandidates.push({ a: p1, b: p2, dist: Math.sqrt(dSq) });
+        }
+      }
+      linkCandidates.sort(function (x, y) { return x.dist - y.dist; });
+      linkDegree.clear();
+      for (i = 0; i < linkCandidates.length; i++) {
+        var c = linkCandidates[i], da = linkDegree.get(c.a) || 0, db = linkDegree.get(c.b) || 0;
+        if (da >= maxLinksPerParticle || db >= maxLinksPerParticle) continue;
+        drawPhotonLine(c.a, c.b, c.dist);
+        linkDegree.set(c.a, da + 1); linkDegree.set(c.b, db + 1);
+      }
+    }
+
+    function applyCanvasSize() {
+      dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+      canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    var rafId, lastFrameTime = 0;
+    function animate(ts) {
+      rafId = requestAnimationFrame(animate);
+      var elapsed = ts - lastFrameTime;
+      if (elapsed < frameInterval) return;
+      lastFrameTime = ts - (elapsed % frameInterval);
+      ctx.clearRect(0, 0, width, height);
+      simTime += dt;
+      if (Math.random() < virtualPairSpawnRate) spawnVirtualPair();
+      drawPhotonLines();
+      for (var i = activeParticles.length - 1; i >= 0; i--) {
+        var p = activeParticles[i];
+        if (!p.inUse) { activeParticles.splice(i, 1); continue; }
+        p.applyForces(); p.integrate(); p.draw();
+      }
+    }
+    function renderStaticFrame() {
+      ctx.clearRect(0, 0, width, height); drawPhotonLines();
+      for (var i = 0; i < activeParticles.length; i++) { var p = activeParticles[i]; if (p.inUse && !p.isVirtual) p.draw(); }
+    }
+    function startLoop() { if (rafId !== undefined) return; lastFrameTime = 0; rafId = requestAnimationFrame(animate); }
+    function stopLoop() { if (rafId !== undefined) { cancelAnimationFrame(rafId); rafId = undefined; } }
+
+    var lastWidth = width, lastHeight = height, resizeTimeout;
+    function applyResize() {
+      var nw = window.innerWidth, nh = window.innerHeight;
+      var wc = Math.abs(nw - lastWidth) > DIMENSION_STABLE_PX, hc = Math.abs(nh - lastHeight) > DIMENSION_STABLE_PX;
+      if (!wc && !hc) return;
+      width = nw; height = nh; applyCanvasSize();
+      var i, p;
+      if (!wc) { // mobile URL bar: just re-clamp
+        for (i = 0; i < activeParticles.length; i++) { p = activeParticles[i]; p.x = clamp(p.x, p.radius, width - p.radius); p.y = clamp(p.y, p.radius, height - p.radius); }
+        lastWidth = nw; lastHeight = nh; return;
+      }
+      var d = computeDensity(width, height);
+      maxLinksPerParticle = d.maxLinks; maxVirtualParticles = d.maxVirtual; connectionDistance = d.connectionDistance;
+      forceRadius = d.forceRadius; virtualPairSpawnRate = d.spawnRate; liveliness = d.liveliness;
+      adjustParticleCount(d.particleCount);
+      isMobile = width <= MOBILE_BREAKPOINT;
+      frameInterval = 1000 / (isMobile ? MOBILE_FPS : DESKTOP_FPS); dt = frameInterval / (1000 / 60);
+      for (i = 0; i < activeParticles.length; i++) { p = activeParticles[i]; p.x = clamp(p.x, p.radius, width - p.radius); p.y = clamp(p.y, p.radius, height - p.radius); }
+      lastWidth = nw; lastHeight = nh;
+    }
+
+    applyCanvasSize();
+    var d0 = computeDensity(width, height);
+    maxLinksPerParticle = d0.maxLinks; maxVirtualParticles = d0.maxVirtual; connectionDistance = d0.connectionDistance;
+    forceRadius = d0.forceRadius; virtualPairSpawnRate = d0.spawnRate; liveliness = d0.liveliness;
+    init(d0.particleCount);
+
+    window.addEventListener('resize', function () { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(applyResize, RESIZE_DEBOUNCE_MS); });
+    window.addEventListener('pointermove', onPointer, { passive: true });
+    window.addEventListener('pointerdown', onPointer, { passive: true });
+    window.addEventListener('pointerleave', clearPointer, { passive: true });
+    window.addEventListener('blur', clearPointer);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stopLoop(); else if (!motionQuery.matches) startLoop();
+    });
+    motionQuery.addEventListener('change', function (e) {
+      if (e.matches) { stopLoop(); renderStaticFrame(); } else if (!document.hidden) startLoop();
+    });
+    if (motionQuery.matches) renderStaticFrame(); else if (!document.hidden) startLoop();
+  })();
+
+  /* ---------- cursor glow + tilt cards ---------- */
+  var glow = document.getElementById('glow');
+  addEventListener('mousemove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
+  if (!reduce && matchMedia('(hover:hover)').matches) {
+    document.querySelectorAll('.tilt').forEach(function (c) {
+      c.addEventListener('mousemove', function (e) {
+        var r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+        var rx = ((y / r.height) - .5) * -7, ry = ((x / r.width) - .5) * 7;
+        c.style.transform = 'perspective(900px) rotateX(' + rx + 'deg) rotateY(' + ry + 'deg) translateY(-3px)';
+        c.style.setProperty('--mx', x + 'px'); c.style.setProperty('--my', y + 'px');
+      });
+      c.addEventListener('mouseleave', function () { c.style.transform = ''; });
+    });
+  }
+
+  /* ---------- scroll progress + active nav ---------- */
+  var prog = document.getElementById('progress'), links = [].slice.call(document.querySelectorAll('#hud a'));
+  var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  addEventListener('scroll', function () {
+    var h = document.documentElement; prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
+    var cur = 0; secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < innerHeight * .4) cur = i; });
+    links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+  }, { passive: true });
+
+  /* ---------- reveal, counters, meters ---------- */
+  function count(el) {
+    var to = +el.dataset.count, suf = el.dataset.suffix || '', t0 = performance.now(), dur = 1600;
+    (function step(t) {
+      var k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      el.textContent = Math.round(to * e).toLocaleString() + (k === 1 ? suf : '');
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  var io = new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      e.target.querySelectorAll('[data-count]').forEach(count);
+      e.target.querySelectorAll('.meter i').forEach(function (m) { m.style.width = m.dataset.w + '%'; });
+      io.unobserve(e.target);
+    });
+  }, { threshold: .12 });
+  document.querySelectorAll('.rv').forEach(function (el, i) { el.style.transitionDelay = (i % 4) * 70 + 'ms'; io.observe(el); });
+
+  /* ---------- green button: expand a window card into a centred modal ---------- */
+  (function () {
+    var modal = document.getElementById('modal'), mc = modal.querySelector('.modal-card');
+    var openCard = null, trigger = null, closing = false;
+
+    document.querySelectorAll('.term .dots i:nth-child(3)').forEach(function (g) {
+      g.setAttribute('role', 'button'); g.setAttribute('tabindex', '0');
+      g.setAttribute('aria-label', 'Expand'); g.title = 'Expand';
+    });
+
+    function build(card) {
+      mc.innerHTML = '';
+      var bar = card.querySelector('.term-bar').cloneNode(true);
+      var body = card.querySelector('.term-body, .stack-body').cloneNode(true);
+      var sc = document.createElement('div'); sc.className = 'modal-scroll'; sc.appendChild(body);
+      mc.appendChild(bar); mc.appendChild(sc);
+      var dots = bar.querySelectorAll('.dots i');
+      dots.forEach(function (d) { d.setAttribute('role', 'button'); d.setAttribute('tabindex', '0'); d.setAttribute('aria-label', 'Minimise'); d.title = 'Minimise'; });
+      dots[2].classList.add('min');           // green now shows the "shrink" glyph
+      var t = bar.querySelector('span'); mc.setAttribute('aria-label', t ? t.textContent : 'Window');
+    }
+    function flip(src, dst) {
+      var s = src.width / dst.width;
+      var dx = (src.left + src.width / 2) - (dst.left + dst.width / 2);
+      var dy = (src.top + src.height / 2) - (dst.top + dst.height / 2);
+      return 'translate(' + dx + 'px,' + dy + 'px) scale(' + s + ')';
+    }
+    function open(card, from) {
+      if (openCard) return;
+      openCard = card; trigger = from; build(card);
+      modal.hidden = false; document.documentElement.style.overflow = 'hidden';
+      var src = card.getBoundingClientRect();
+      void modal.offsetWidth; modal.classList.add('open');
+      var dst = mc.getBoundingClientRect();
+      if (!reduce && mc.animate) {
+        mc.animate([{ transform: flip(src, dst), opacity: .35 }, { transform: 'none', opacity: 1 }],
+                   { duration: 420, easing: 'cubic-bezier(.2,.9,.25,1)' });
+      }
+      mc.focus({ preventScroll: true });
+    }
+    function finish() {
+      mc.getAnimations && mc.getAnimations().forEach(function (a) { a.cancel(); });
+      modal.hidden = true; mc.innerHTML = '';
+      document.documentElement.style.overflow = '';
+      var back = trigger; openCard = null; trigger = null; closing = false;
+      if (back) back.focus({ preventScroll: true });
+    }
+    function close() {                          // red, yellow and green all minimise
+      if (!openCard || closing) return; closing = true;
+      var src = openCard.getBoundingClientRect(), dst = mc.getBoundingClientRect();
+      modal.classList.remove('open');
+      if (!reduce && mc.animate) {
+        var a = mc.animate([{ transform: 'none', opacity: 1 }, { transform: flip(src, dst), opacity: 0 }],
+                           { duration: 340, easing: 'cubic-bezier(.5,0,.75,0)', fill: 'forwards' });
+        a.onfinish = finish;
+      } else finish();
+    }
+
+    document.addEventListener('click', function (e) {
+      var g = e.target.closest('.term:not(.modal-card) .dots i:nth-child(3)');
+      if (g) { open(g.closest('.card.term'), g); return; }
+      if (e.target.closest('.modal-card .dots i')) { close(); return; }
+      if (e.target === modal) close();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && openCard) { close(); return; }
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('.dots i[role="button"]')) { e.preventDefault(); e.target.click(); return; }
+      if (e.key === 'Tab' && openCard) {        // keep keyboard focus inside the dialog
+        var f = mc.querySelectorAll('a[href],[tabindex="0"]'); if (!f.length) return;
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === mc)) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+  })();
+
+  /* ---------- live clock ---------- */
+  var clock = document.getElementById('clock');
+  (function tick() { clock.textContent = new Date().toLocaleTimeString([], { hour12: false }); setTimeout(tick, 1000); })();
+})();
 </script>
 </body>
 </html>
