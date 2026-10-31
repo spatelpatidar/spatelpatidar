@@ -334,6 +334,7 @@ jobs:
         run: |
           mkdir -p site
           cp index.html site/index.html
+          cp favicon.svg site/favicon.svg
           touch site/.nojekyll
 
       - uses: actions/configure-pages@v5
