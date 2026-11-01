@@ -49,8 +49,10 @@
   ::selection { background:var(--accent); color:#000; }
 
   /* ===== background layers ===== */
+  /* PERF: canvas promoted to its own compositor layer */
   #bg { position:fixed; inset:0; z-index:-3; width:100%; height:100%;
-    background:radial-gradient(circle at 50% 28%, #1c0733 0%, #12001f 45%, #0d001a 100%); }
+    background:radial-gradient(circle at 50% 28%, #1c0733 0%, #12001f 45%, #0d001a 100%);
+    will-change:transform; transform:translateZ(0); }
   @media (prefers-color-scheme: light) {
     #bg { background:radial-gradient(circle at 50% 28%, hsl(205 75% 96%) 0%, hsl(192 50% 97.5%) 45%, hsl(180 35% 97%) 100%); }
   }
@@ -64,16 +66,17 @@
             mask-image:radial-gradient(ellipse at 50% 20%, #000 20%, transparent 80%);
     opacity:.3;
   }
+  /* PERF: removed full-screen mix-blend-mode (forced re-blend of everything behind it) */
   .scanlines {
-    position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.07;
+    position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:.03;
     background:repeating-linear-gradient(0deg, #fff 0 1px, transparent 1px 3px);
-    mix-blend-mode:overlay;
   }
+  /* PERF: moved with transform only (compositor), no blur filter, no left/top */
   .cursor-glow {
     position:fixed; z-index:-1; width:520px; height:520px; left:0; top:0; pointer-events:none;
-    border-radius:50%; transform:translate(-50%,-50%);
+    border-radius:50%; transform:translate(-999px,-999px) translate(-50%,-50%);
     background:radial-gradient(circle, color-mix(in srgb,var(--accent) 22%, transparent), transparent 65%);
-    filter:blur(10px); transition:opacity .3s;
+    will-change:transform;
   }
   .progress { position:fixed; top:0; left:0; height:3px; width:0; z-index:2000; background:var(--grad); box-shadow:0 0 12px var(--accent); }
 
@@ -88,10 +91,13 @@
     font:600 12px var(--mono); letter-spacing:.06em;
   }
   .hud a { position:relative; overflow:hidden; isolation:isolate; color:var(--muted); padding:8px 14px; border-radius:999px; text-transform:uppercase; transition:color .25s, transform .2s, box-shadow .25s; }
-  .hud a::before { content:""; position:absolute; inset:0; z-index:-1; background:var(--grad); background-size:300% 100%; animation:slide 4s linear infinite; opacity:0; transition:opacity .25s; }
+  /* PERF: gradient slide only runs while hovered */
+  .hud a::before { content:""; position:absolute; inset:0; z-index:-1; background:var(--grad); background-size:300% 100%; animation:none; opacity:0; transition:opacity .25s; }
+  .hud a { display:inline-flex; align-items:center; gap:8px; }
+  .hud a svg { width:15px; height:15px; flex:none; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
   .hud a.on { color:var(--head); background:color-mix(in srgb,var(--accent) 22%, transparent); box-shadow:0 0 18px color-mix(in srgb,var(--accent) 45%, transparent) inset; }
   .hud a:hover { color:#fff; text-decoration:none; transform:translateY(-1px); box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%, transparent); }
-  .hud a:hover::before { opacity:1; }
+  .hud a:hover::before { opacity:1; animation:slide 4s linear infinite; }
 
   /* ===== GitHub button (original logic kept) ===== */
   .gh-btn {
@@ -105,11 +111,11 @@
   }
   .gh-btn::before {
     content:""; position:absolute; inset:0; z-index:-1; background:var(--grad);
-    background-size:300% 100%; animation:slide 4s linear infinite; opacity:0; transition:opacity .25s;
+    background-size:300% 100%; animation:none; opacity:0; transition:opacity .25s;
   }
   .gh-btn[hidden] { display:none; }
   .gh-btn:hover { color:#fff; border-color:rgba(255,255,255,.25); transform:translateY(-1px); }
-  .gh-btn:hover::before { opacity:1; }
+  .gh-btn:hover::before { opacity:1; animation:slide 4s linear infinite; }
   .gh-btn img { width:22px; height:auto; display:block; }
 
   /* ===== layout ===== */
@@ -133,17 +139,17 @@
     transition:transform .25s ease, box-shadow .3s, border-color .3s;
     box-shadow:0 10px 30px rgba(0,0,0,.28);
   }
+  /* PERF: the spinning border used to animate on ~40 cards at all times.
+     Now it only spins on the card you hover. */
   .card::before { /* animated gradient border */
     content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px; z-index:0; pointer-events:none;
     background:conic-gradient(from var(--ang,0deg), transparent 0 55%, var(--accent) 75%, var(--accent2) 90%, transparent);
-    /* -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite:xor; mask-composite:exclude; */
     -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite:xor; mask-composite:exclude;
-    opacity:.55; animation:spin 6s linear infinite; transition:opacity .3s;
+    opacity:.55; animation:none; transition:opacity .3s;
   }
   .card:hover { box-shadow:0 18px 50px rgba(0,0,0,.45), 0 0 40px color-mix(in srgb,var(--accent) 22%, transparent); }
-  .card:hover::before { opacity:1; }
+  .card:hover::before { opacity:1; animation:spin 6s linear infinite; }
   .card > * { position:relative; z-index:1; }
   .card h3 { margin:2px 0 12px; font:600 13px var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--accent); text-align:left; }
   .card img { display:block; margin:0 auto; height:auto; border-radius:12px; }
@@ -165,12 +171,14 @@
   .status { display:inline-flex; align-items:center; gap:10px; margin:26px 0 8px; padding:7px 14px; border-radius:999px;
     font:600 12px var(--mono); letter-spacing:.08em; background:color-mix(in srgb,var(--panel) 80%, transparent); border:1px solid var(--line); color:var(--muted); }
   .status i { width:8px; height:8px; border-radius:50%; background:#34d399; animation:pulse 2s infinite; }
+  /* PERF: title no longer runs a permanent gradient animation; it animates on hover only */
   .glitch {
     font:900 clamp(34px,7vw,72px)/1.05 var(--display); margin:8px 0 6px; letter-spacing:.04em; text-transform:uppercase;
     background:var(--grad); background-size:300% 100%; -webkit-background-clip:text; background-clip:text; color:transparent;
-    animation:slide 8s linear infinite; position:relative; display:inline-block;
+    animation:none; position:relative; display:inline-block;
     filter:drop-shadow(0 0 22px color-mix(in srgb,var(--accent) 45%, transparent));
   }
+  .glitch:hover { animation:slide 8s linear infinite; }
   .glitch::before, .glitch::after { content:attr(data-t); position:absolute; inset:0; background:inherit; -webkit-background-clip:text; background-clip:text; opacity:0; }
   .glitch:hover::before { opacity:.8; transform:translate(3px,-2px); clip-path:inset(0 0 55% 0); animation:none; }
   .glitch:hover::after { opacity:.8; transform:translate(-3px,2px); clip-path:inset(55% 0 0 0); animation:none; }
@@ -182,9 +190,9 @@
     font:600 13px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--head); border:1px solid var(--line);
     background:color-mix(in srgb,var(--panel) 80%, transparent); transition:.25s;
   }
-  .btn::before { content:""; position:absolute; inset:0; z-index:-1; background:var(--grad); background-size:300% 100%; animation:slide 5s linear infinite; opacity:0; transition:.25s; }
+  .btn::before { content:""; position:absolute; inset:0; z-index:-1; background:var(--grad); background-size:300% 100%; animation:none; opacity:0; transition:.25s; }
   .btn:hover { color:#fff; transform:translateY(-2px); text-decoration:none; box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 35%, transparent); }
-  .btn:hover::before { opacity:1; }
+  .btn:hover::before { opacity:1; animation:slide 5s linear infinite; }
   .btn.primary { border-color:color-mix(in srgb,var(--accent) 55%, transparent); }
 
   /* counters */
@@ -272,7 +280,8 @@
   .wip-item small { font:500 12px var(--mono); color:var(--muted); }
   .bar { height:6px; border-radius:6px; background:rgba(128,140,180,.2); overflow:hidden; margin-top:6px; grid-column:1/-1; display:none; }
   .meter { height:8px; border-radius:8px; background:rgba(128,140,180,.2); overflow:hidden; }
-  .meter i { display:block; height:100%; width:0; border-radius:8px; background:var(--grad); background-size:200% 100%; animation:slide 3s linear infinite; box-shadow:0 0 14px var(--accent); transition:width 1.4s cubic-bezier(.2,.7,.2,1); }
+  /* PERF: meter gradient is static once filled (was sliding forever) */
+  .meter i { display:block; height:100%; width:0; border-radius:8px; background:var(--grad); background-size:200% 100%; animation:none; box-shadow:0 0 14px var(--accent); transition:width 1.4s cubic-bezier(.2,.7,.2,1); }
 
   /* ===== stats ===== */
   .grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; align-items:stretch; margin:18px 0; }
@@ -290,15 +299,34 @@
   footer .views img { border-radius:6px; }
   footer img.wave { width:100%; border-radius:20px; margin-top:20px; }
 
+  /* hamburger button (only shown on narrow screens) */
+  .menu-btn { display:none; flex:none; width:40px; height:40px; padding:0; border-radius:999px; cursor:pointer;
+    align-items:center; justify-content:center; flex-direction:column; gap:5px;
+    background:var(--panel); border:1px solid var(--line); box-shadow:0 4px 16px rgba(0,0,0,.25); transition:border-color .25s, box-shadow .25s; }
+  .menu-btn:hover { border-color:color-mix(in srgb,var(--accent) 60%, transparent); box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 35%, transparent); }
+  .menu-btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .menu-btn span { display:block; width:18px; height:2px; border-radius:2px; background:var(--head); transition:transform .25s, opacity .2s; }
+  .menu-btn[aria-expanded="true"] span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+  .menu-btn[aria-expanded="true"] span:nth-child(2) { opacity:0; }
+  .menu-btn[aria-expanded="true"] span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
   @media (max-width:860px) {
-    .hud { display:none; }
     .topbar { top:10px; right:10px; }
+    .menu-btn { display:inline-flex; }
+    /* nav becomes a dropdown panel opened by the hamburger */
+    .hud { position:fixed; top:62px; right:10px; z-index:1700; flex-direction:column; gap:2px; min-width:200px; padding:8px; border-radius:20px; font-size:13px;
+      opacity:0; visibility:hidden; transform:translateY(-8px) scale(.97); transform-origin:top right; pointer-events:none;
+      transition:opacity .2s, transform .2s, visibility 0s linear .2s; }
+    .hud.open { opacity:1; visibility:visible; transform:none; pointer-events:auto; transition:opacity .2s, transform .2s; }
+    .hud a { padding:12px 16px; border-radius:12px; }
+    .gh-btn { flex:none; }
     .term-body { grid-template-columns:1fr; }
     .counters { grid-template-columns:repeat(2,1fr); }
     .wip-item { grid-template-columns:1fr; gap:6px; }
     .wrap { padding-top:70px; }
   }
   @media (max-width:700px) { .grid, .cols { grid-template-columns:1fr; } .gh-btn { padding:8px 12px; font-size:12px; } }
+  @media (max-width:480px) { .gh-btn span { display:none; } .gh-btn { padding:8px 10px; } }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation:none !important; transition:none !important; }
     .rv { opacity:1; transform:none; }
@@ -308,6 +336,9 @@
   // Weekday accent + card tint
   document.documentElement.dataset.day = new Date().getDay();
   // Stat images have the card color baked in (1c1e21): swap for today's panel color.
+  // PERF NOTE: the stat images below the fold are loading="lazy", so they have not
+  // started downloading yet at DOMContentLoaded. Changing src here therefore does NOT
+  // cause a second download for them (it did before, when every image loaded eagerly).
   document.addEventListener('DOMContentLoaded', function () {
     if (!window.matchMedia('(prefers-color-scheme: dark)').matches) return;
     var panel = getComputedStyle(document.documentElement).getPropertyValue('--panel').trim().replace('#', '');
@@ -328,17 +359,18 @@
 
 <div class="topbar">
 <nav class="hud" id="hud">
-  <a href="#home" class="on">Home</a>
-  <a href="#about">About</a>
-  <a href="#stack">Stack</a>
-  <a href="#packages">Packages</a>
-  <a href="#stats">Stats</a>
+  <a href="#home" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>Home</a>
+  <a href="#about"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>About</a>
+  <a href="#stack"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12.5 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>Stack</a>
+  <a href="#packages"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="m3.3 7.6 8.7 5 8.7-5"/><path d="M12 22v-9.4"/></svg>Packages</a>
+  <a href="#stats"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>Stats</a>
 </nav>
 
 <a id="gh-btn" class="gh-btn" href="https://github.com/spatelpatidar" hidden>
   <img src="favicon.svg" alt="" width="22" height="20">
   <span>My GitHub</span>
 </a>
+<button id="menu-btn" class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="hud"><span></span><span></span><span></span></button>
 </div>
 
 <div class="wrap">
@@ -396,7 +428,7 @@
         </ul>
         <div class="prompt">$ _</div>
       </div>
-      <div><img class="gif" src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif" alt="coding gif"></div>
+      <div><img class="gif" src="https://media.giphy.com/media/qgQUggAC3Pfv687qPC/giphy.gif" alt="coding gif" loading="lazy" decoding="async"></div>
     </div>
   </div>
 </section>
@@ -406,11 +438,11 @@
   <h2 class="sec-title rv">Find Me Here</h2>
   <div class="card tilt rv">
     <p class="badges">
-      <a href="https://github.com/spatelpatidar"><img src="https://img.shields.io/badge/GitHub-%23181717.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" alt="GitHub"></a>
-      <a href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?style=for-the-badge&amp;logo=linkedin&amp;logoColor=white" alt="LinkedIn"></a>
-      <a href="mailto:shailendrapatidar00@gmail.com"><img src="https://img.shields.io/badge/Gmail-%23EA4335.svg?style=for-the-badge&amp;logo=gmail&amp;logoColor=white" alt="Gmail"></a>
-      <a href="https://rubygems.org/profiles/spatelpatidar" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/RubyGems-%23E9573F.svg?style=for-the-badge&amp;logo=rubygems&amp;logoColor=white" alt="RubyGems"></a>
-      <a href="https://pub.dev/publishers" target="_blank" rel="noopener noreferrer"><img src="https://img.shields.io/badge/pub.dev-%230175C2.svg?style=for-the-badge&amp;logo=dart&amp;logoColor=white" alt="pub.dev"></a>
+      <a href="https://github.com/spatelpatidar"><img loading="lazy" decoding="async" src="https://img.shields.io/badge/GitHub-%23181717.svg?style=for-the-badge&amp;logo=github&amp;logoColor=white" alt="GitHub"></a>
+      <a href="https://www.linkedin.com/in/shailendra-kumar-07s/" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="https://img.shields.io/badge/LinkedIn-%230077B5.svg?style=for-the-badge&amp;logo=linkedin&amp;logoColor=white" alt="LinkedIn"></a>
+      <a href="mailto:shailendrapatidar00@gmail.com"><img loading="lazy" decoding="async" src="https://img.shields.io/badge/Gmail-%23EA4335.svg?style=for-the-badge&amp;logo=gmail&amp;logoColor=white" alt="Gmail"></a>
+      <a href="https://rubygems.org/profiles/spatelpatidar" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="https://img.shields.io/badge/RubyGems-%23E9573F.svg?style=for-the-badge&amp;logo=rubygems&amp;logoColor=white" alt="RubyGems"></a>
+      <a href="https://pub.dev/publishers" target="_blank" rel="noopener noreferrer"><img loading="lazy" decoding="async" src="https://img.shields.io/badge/pub.dev-%230175C2.svg?style=for-the-badge&amp;logo=dart&amp;logoColor=white" alt="pub.dev"></a>
     </p>
     <div class="glare"></div>
   </div>
@@ -424,59 +456,59 @@
     <div class="stack-body">
     <div class="tech-row"><b>🌸 Languages</b>
       <p class="badges">
-        <img src="https://img.shields.io/badge/Ruby-ff6fd8?style=for-the-badge&amp;logo=ruby&amp;logoColor=white" alt="Ruby">
-        <img src="https://img.shields.io/badge/Dart-38bdf8?style=for-the-badge&amp;logo=dart&amp;logoColor=white" alt="Dart">
-        <img src="https://img.shields.io/badge/Python-facc15?style=for-the-badge&amp;logo=python&amp;logoColor=black" alt="Python">
-        <img src="https://img.shields.io/badge/Java-f97316?style=for-the-badge&amp;logo=openjdk&amp;logoColor=white" alt="Java">
-        <img src="https://img.shields.io/badge/C%2B%2B-a855f7?style=for-the-badge&amp;logo=cplusplus&amp;logoColor=white" alt="C++">
-        <img src="https://img.shields.io/badge/C-6366f1?style=for-the-badge&amp;logo=c&amp;logoColor=white" alt="C">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Ruby-ff6fd8?style=for-the-badge&amp;logo=ruby&amp;logoColor=white" alt="Ruby">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Dart-38bdf8?style=for-the-badge&amp;logo=dart&amp;logoColor=white" alt="Dart">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Python-facc15?style=for-the-badge&amp;logo=python&amp;logoColor=black" alt="Python">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Java-f97316?style=for-the-badge&amp;logo=openjdk&amp;logoColor=white" alt="Java">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/C%2B%2B-a855f7?style=for-the-badge&amp;logo=cplusplus&amp;logoColor=white" alt="C++">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/C-6366f1?style=for-the-badge&amp;logo=c&amp;logoColor=white" alt="C">
       </p>
     </div>
     <div class="tech-row"><b>🚀 Backend &amp; Frameworks</b>
       <p class="badges">
-        <img src="https://img.shields.io/badge/Ruby%20on%20Rails-34d399?style=for-the-badge&amp;logo=rubyonrails&amp;logoColor=white" alt="Rails">
-        <img src="https://img.shields.io/badge/Flutter-38bdf8?style=for-the-badge&amp;logo=flutter&amp;logoColor=white" alt="Flutter">
-        <img src="https://img.shields.io/badge/GraphQL-ef4444?style=for-the-badge&amp;logo=graphql&amp;logoColor=white" alt="GraphQL">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Ruby%20on%20Rails-34d399?style=for-the-badge&amp;logo=rubyonrails&amp;logoColor=white" alt="Rails">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Flutter-38bdf8?style=for-the-badge&amp;logo=flutter&amp;logoColor=white" alt="Flutter">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/GraphQL-ef4444?style=for-the-badge&amp;logo=graphql&amp;logoColor=white" alt="GraphQL">
       </p>
     </div>
     <div class="tech-row"><b>🗄️ Databases &amp; Backend Services</b>
       <p class="badges">
-        <img src="https://img.shields.io/badge/PostgreSQL-38bdf8?style=for-the-badge&amp;logo=postgresql&amp;logoColor=white" alt="PostgreSQL">
-        <img src="https://img.shields.io/badge/MySQL-f97316?style=for-the-badge&amp;logo=mysql&amp;logoColor=white" alt="MySQL">
-        <img src="https://img.shields.io/badge/SQLite-6366f1?style=for-the-badge&amp;logo=sqlite&amp;logoColor=white" alt="SQLite">
-        <img src="https://img.shields.io/badge/Redis-ef4444?style=for-the-badge&amp;logo=redis&amp;logoColor=white" alt="Redis">
-        <img src="https://img.shields.io/badge/Firebase-fbbf24?style=for-the-badge&amp;logo=firebase&amp;logoColor=black" alt="Firebase">
-        <img src="https://img.shields.io/badge/Supabase-34d399?style=for-the-badge&amp;logo=supabase&amp;logoColor=white" alt="Supabase">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/PostgreSQL-38bdf8?style=for-the-badge&amp;logo=postgresql&amp;logoColor=white" alt="PostgreSQL">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/MySQL-f97316?style=for-the-badge&amp;logo=mysql&amp;logoColor=white" alt="MySQL">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/SQLite-6366f1?style=for-the-badge&amp;logo=sqlite&amp;logoColor=white" alt="SQLite">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Redis-ef4444?style=for-the-badge&amp;logo=redis&amp;logoColor=white" alt="Redis">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Firebase-fbbf24?style=for-the-badge&amp;logo=firebase&amp;logoColor=black" alt="Firebase">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Supabase-34d399?style=for-the-badge&amp;logo=supabase&amp;logoColor=white" alt="Supabase">
       </p>
     </div>
     <div class="tech-row"><b>🎨 Frontend</b>
       <p class="badges">
-        <img src="https://img.shields.io/badge/HTML5-ff6fd8?style=for-the-badge&amp;logo=html5&amp;logoColor=white" alt="HTML5">
-        <img src="https://img.shields.io/badge/CSS3-38bdf8?style=for-the-badge&amp;logo=css3&amp;logoColor=white" alt="CSS3">
-        <img src="https://img.shields.io/badge/JavaScript-a855f7?style=for-the-badge&amp;logo=javascript&amp;logoColor=white" alt="JavaScript">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/HTML5-ff6fd8?style=for-the-badge&amp;logo=html5&amp;logoColor=white" alt="HTML5">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/CSS3-38bdf8?style=for-the-badge&amp;logo=css3&amp;logoColor=white" alt="CSS3">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/JavaScript-a855f7?style=for-the-badge&amp;logo=javascript&amp;logoColor=white" alt="JavaScript">
       </p>
     </div>
     <div class="tech-row"><b>🛠️ DevOps &amp; Tools</b>
       <p class="badges">
-        <img src="https://img.shields.io/badge/Docker-38bdf8?style=for-the-badge&amp;logo=docker&amp;logoColor=white" alt="Docker">
-        <img src="https://img.shields.io/badge/Git-f97316?style=for-the-badge&amp;logo=git&amp;logoColor=white" alt="Git">
-        <img src="https://img.shields.io/badge/GitHub-facc15?style=for-the-badge&amp;logo=github&amp;logoColor=black" alt="GitHub">
-        <img src="https://img.shields.io/badge/GitLab-ef4444?style=for-the-badge&amp;logo=gitlab&amp;logoColor=white" alt="GitLab">
-        <img src="https://img.shields.io/badge/Linux-a855f7?style=for-the-badge&amp;logo=linux&amp;logoColor=white" alt="Linux">
-        <img src="https://img.shields.io/badge/VS%20Code-38bdf8?style=for-the-badge&amp;logo=visualstudiocode&amp;logoColor=white" alt="VS Code">
-        <img src="https://img.shields.io/badge/Postman-f97316?style=for-the-badge&amp;logo=postman&amp;logoColor=white" alt="Postman">
-        <img src="https://img.shields.io/badge/Cloudflare-fbbf24?style=for-the-badge&amp;logo=cloudflare&amp;logoColor=black" alt="Cloudflare">
-        <img src="https://img.shields.io/badge/Swagger-34d399?style=for-the-badge&amp;logo=swagger&amp;logoColor=white" alt="Swagger">
-        <img src="https://img.shields.io/badge/Render-38bdf8?style=for-the-badge&amp;logo=render&amp;logoColor=white" alt="Render">
-        <img src="https://img.shields.io/badge/Railway-6366f1?style=for-the-badge&amp;logo=railway&amp;logoColor=white" alt="Railway">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Docker-38bdf8?style=for-the-badge&amp;logo=docker&amp;logoColor=white" alt="Docker">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Git-f97316?style=for-the-badge&amp;logo=git&amp;logoColor=white" alt="Git">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/GitHub-facc15?style=for-the-badge&amp;logo=github&amp;logoColor=black" alt="GitHub">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/GitLab-ef4444?style=for-the-badge&amp;logo=gitlab&amp;logoColor=white" alt="GitLab">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Linux-a855f7?style=for-the-badge&amp;logo=linux&amp;logoColor=white" alt="Linux">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/VS%20Code-38bdf8?style=for-the-badge&amp;logo=visualstudiocode&amp;logoColor=white" alt="VS Code">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Postman-f97316?style=for-the-badge&amp;logo=postman&amp;logoColor=white" alt="Postman">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Cloudflare-fbbf24?style=for-the-badge&amp;logo=cloudflare&amp;logoColor=black" alt="Cloudflare">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Swagger-34d399?style=for-the-badge&amp;logo=swagger&amp;logoColor=white" alt="Swagger">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Render-38bdf8?style=for-the-badge&amp;logo=render&amp;logoColor=white" alt="Render">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Railway-6366f1?style=for-the-badge&amp;logo=railway&amp;logoColor=white" alt="Railway">
       </p>
     </div>
     <div class="tech-row" style="margin-bottom:0"><b>📚 Currently Learning</b>
       <p class="badges">
-        <img src="https://img.shields.io/badge/Rust-ff6fd8?style=for-the-badge&amp;logo=rust&amp;logoColor=white" alt="Rust">
-        <img src="https://img.shields.io/badge/Go-38bdf8?style=for-the-badge&amp;logo=go&amp;logoColor=white" alt="Go">
-        <img src="https://img.shields.io/badge/GraphQL-a855f7?style=for-the-badge&amp;logo=graphql&amp;logoColor=white" alt="GraphQL">
-        <img src="https://img.shields.io/badge/React-34d399?style=for-the-badge&amp;logo=react&amp;logoColor=white" alt="React">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Rust-ff6fd8?style=for-the-badge&amp;logo=rust&amp;logoColor=white" alt="Rust">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/Go-38bdf8?style=for-the-badge&amp;logo=go&amp;logoColor=white" alt="Go">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/GraphQL-a855f7?style=for-the-badge&amp;logo=graphql&amp;logoColor=white" alt="GraphQL">
+        <img loading="lazy" decoding="async" src="https://img.shields.io/badge/React-34d399?style=for-the-badge&amp;logo=react&amp;logoColor=white" alt="React">
       </p>
     </div>
     </div>
@@ -491,31 +523,31 @@
     <div class="card tilt pkg rv">
       <div class="top"><h4><a href="https://rubygems.org/gems/respondo" target="_blank" rel="noopener noreferrer">respondo</a></h4><span class="tag ruby">Ruby</span></div>
       <p>Standardizes JSON API responses across Rails apps — success, data, message &amp; meta fields.</p>
-      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/gem/dt/respondo?label=Downloads&amp;style=social" alt="respondo downloads"></div>
+      <div class="foot"><span>✅ Published</span><img loading="lazy" decoding="async" src="https://img.shields.io/gem/dt/respondo?label=Downloads&amp;style=social" alt="respondo downloads"></div>
       <div class="glare"></div>
     </div>
     <div class="card tilt pkg rv">
       <div class="top"><h4><a href="https://rubygems.org/gems/respondo-graphql" target="_blank" rel="noopener noreferrer">respondo-graphql</a></h4><span class="tag ruby">Ruby</span></div>
       <p>Consistent GraphQL-spec responses for Rails controllers — data, errors, extensions.</p>
-      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/gem/dt/respondo-graphql?label=Downloads&amp;style=social" alt="respondo-graphql downloads"></div>
+      <div class="foot"><span>✅ Published</span><img loading="lazy" decoding="async" src="https://img.shields.io/gem/dt/respondo-graphql?label=Downloads&amp;style=social" alt="respondo-graphql downloads"></div>
       <div class="glare"></div>
     </div>
     <div class="card tilt pkg rv">
       <div class="top"><h4><a href="https://rubygems.org/gems/auditron" target="_blank" rel="noopener noreferrer">auditron</a></h4><span class="tag ruby">Ruby</span></div>
       <p>Tracks who changed what on any ActiveRecord model — storing only changed fields, not full snapshots.</p>
-      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/gem/dt/auditron?label=Downloads&amp;style=social" alt="auditron downloads"></div>
+      <div class="foot"><span>✅ Published</span><img loading="lazy" decoding="async" src="https://img.shields.io/gem/dt/auditron?label=Downloads&amp;style=social" alt="auditron downloads"></div>
       <div class="glare"></div>
     </div>
     <div class="card tilt pkg rv">
       <div class="top"><h4><a href="https://pub.dev/packages/app_snackbar" target="_blank" rel="noopener noreferrer">app_snackbar</a></h4><span class="tag dart">Dart</span></div>
       <p>Lightweight Flutter snackbar utility for clean, customizable in-app notifications.</p>
-      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/pub/dm/app_snackbar?label=Downloads&amp;style=social" alt="app_snackbar downloads"></div>
+      <div class="foot"><span>✅ Published</span><img loading="lazy" decoding="async" src="https://img.shields.io/pub/dm/app_snackbar?label=Downloads&amp;style=social" alt="app_snackbar downloads"></div>
       <div class="glare"></div>
     </div>
     <div class="card tilt pkg rv">
       <div class="top"><h4><a href="https://pub.dev/packages/swift_field" target="_blank" rel="noopener noreferrer">swift_field</a></h4><span class="tag dart">Dart</span></div>
       <p>Production-grade Flutter form widgets — text fields, password fields, searchable dropdowns &amp; gradient buttons. Zero dependencies.</p>
-      <div class="foot"><span>✅ Published</span><img src="https://img.shields.io/pub/dm/swift_field?label=Downloads&amp;style=social" alt="swift_field downloads"></div>
+      <div class="foot"><span>✅ Published</span><img loading="lazy" decoding="async" src="https://img.shields.io/pub/dm/swift_field?label=Downloads&amp;style=social" alt="swift_field downloads"></div>
       <div class="glare"></div>
     </div>
   </div>
@@ -549,35 +581,35 @@
 
   <div class="card wide-card rv">
     <h3>3D Contribution Graph</h3>
-    <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/profile-3d-contrib/profile-night-rainbow.svg" alt="3D contribution graph">
+    <img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/profile-3d-contrib/profile-night-rainbow.svg" alt="3D contribution graph">
   </div>
 
   <div class="grid">
     <div class="card tilt rv">
       <h3>GitHub Stats</h3>
-      <img src="https://github-readme-stats-eight-flame.vercel.app/api?username=spatelpatidar&amp;show_icons=true&amp;theme=github_dark&amp;hide_border=true&amp;bg_color=1c1e21&amp;title_color=58a6ff&amp;icon_color=8b949e&amp;text_color=c9d1d9&amp;border_radius=16" alt="GitHub stats">
+      <img loading="lazy" decoding="async" src="https://github-readme-stats-eight-flame.vercel.app/api?username=spatelpatidar&amp;show_icons=true&amp;theme=github_dark&amp;hide_border=true&amp;bg_color=1c1e21&amp;title_color=58a6ff&amp;icon_color=8b949e&amp;text_color=c9d1d9&amp;border_radius=16" alt="GitHub stats">
       <div class="glare"></div>
     </div>
     <div class="card tilt rv">
       <h3>Top Languages</h3>
-      <img src="https://github-readme-stats-eight-flame.vercel.app/api/top-langs/?username=spatelpatidar&amp;langs_count=10&amp;theme=github_dark&amp;hide_border=true&amp;layout=compact&amp;bg_color=1c1e21&amp;title_color=58a6ff&amp;text_color=c9d1d9&amp;border_radius=16" alt="Top languages">
+      <img loading="lazy" decoding="async" src="https://github-readme-stats-eight-flame.vercel.app/api/top-langs/?username=spatelpatidar&amp;langs_count=10&amp;theme=github_dark&amp;hide_border=true&amp;layout=compact&amp;bg_color=1c1e21&amp;title_color=58a6ff&amp;text_color=c9d1d9&amp;border_radius=16" alt="Top languages">
       <div class="glare"></div>
     </div>
     <div class="card tilt rv">
       <h3>Streak Stats</h3>
-      <img src="https://streak-stats.demolab.com/?user=spatelpatidar&amp;hide_border=true&amp;background=1c1e21&amp;ring=58a6ff&amp;fire=f78166&amp;currStreakLabel=58a6ff&amp;sideLabels=8b949e&amp;dates=8b949e&amp;currStreakNum=f0f6fc&amp;sideNums=f0f6fc&amp;border_radius=16" alt="Streak stats">
+      <img loading="lazy" decoding="async" src="https://streak-stats.demolab.com/?user=spatelpatidar&amp;hide_border=true&amp;background=1c1e21&amp;ring=58a6ff&amp;fire=f78166&amp;currStreakLabel=58a6ff&amp;sideLabels=8b949e&amp;dates=8b949e&amp;currStreakNum=f0f6fc&amp;sideNums=f0f6fc&amp;border_radius=16" alt="Streak stats">
       <div class="glare"></div>
     </div>
     <div class="card tilt rv">
       <h3>Trophies</h3>
-      <img src="https://github-trophies.devomb.com/?username=spatelpatidar&amp;theme=tokyonight&amp;row=2&amp;column=4&amp;no-frame=true" alt="Trophies">
+      <img loading="lazy" decoding="async" src="https://github-trophies.devomb.com/?username=spatelpatidar&amp;theme=tokyonight&amp;row=2&amp;column=4&amp;no-frame=true" alt="Trophies">
       <div class="glare"></div>
     </div>
   </div>
 
   <div class="card wide-card rv">
     <h3>Contribution Graph</h3>
-    <img src="https://arshbibhaw-github-activity-graph.vercel.app/graph?username=spatelpatidar&amp;bg_color=1c1e21&amp;color=58a6ff&amp;line=58a6ff&amp;point=79c0ff&amp;area=true&amp;hide_border=true&amp;border_radius=16&amp;custom_title=Shailendra's+Contribution+Graph" alt="Contribution graph">
+    <img loading="lazy" decoding="async" src="https://arshbibhaw-github-activity-graph.vercel.app/graph?username=spatelpatidar&amp;bg_color=1c1e21&amp;color=58a6ff&amp;line=58a6ff&amp;point=79c0ff&amp;area=true&amp;hide_border=true&amp;border_radius=16&amp;custom_title=Shailendra's+Contribution+Graph" alt="Contribution graph">
   </div>
 
   <h3 class="sub rv"><b>🐍</b> Swallowing My Contributions</h3>
@@ -585,7 +617,7 @@
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-dark.svg">
       <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-light.svg">
-      <img alt="Contribution snake" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-dark.svg" width="95%">
+      <img loading="lazy" decoding="async" alt="Contribution snake" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/github-snake-dark.svg" width="95%">
     </picture>
   </div>
 
@@ -594,31 +626,31 @@
 
   <div class="card wide-card rv">
     <h3>Commit Calendar</h3>
-    <img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.isocalendar.fullyear.svg" alt="Commit calendar">
+    <img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.isocalendar.fullyear.svg" alt="Commit calendar">
   </div>
 
   <div class="cols">
     <div class="col">
-      <div class="card rv"><h3>GitHub Overview</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/github-metrics.svg" alt="GitHub overview"></div>
-      <div class="card rv"><h3>Languages</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.languages.svg" alt="Languages"></div>
-      <div class="card rv"><h3>Lines of Code</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.lines.svg" alt="Lines of code"></div>
-      <div class="card rv"><h3>Repository Traffic</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.traffic.svg" alt="Repository traffic"></div>
-      <div class="card rv"><h3>Achievements (Detailed)</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.detailed.svg" alt="Achievements detailed"></div>
+      <div class="card rv"><h3>GitHub Overview</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/github-metrics.svg" alt="GitHub overview"></div>
+      <div class="card rv"><h3>Languages</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.languages.svg" alt="Languages"></div>
+      <div class="card rv"><h3>Lines of Code</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.lines.svg" alt="Lines of code"></div>
+      <div class="card rv"><h3>Repository Traffic</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.traffic.svg" alt="Repository traffic"></div>
+      <div class="card rv"><h3>Achievements (Detailed)</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.detailed.svg" alt="Achievements detailed"></div>
     </div>
     <div class="col">
-      <div class="card rv"><h3>Achievements</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.svg" alt="Achievements"></div>
-      <div class="card rv"><h3>Followers &amp; Following</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.people.svg" alt="People"></div>
-      <div class="card rv"><h3>Starred Repositories</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.stars.svg" alt="Starred repositories"></div>
-      <div class="card rv"><h3>Pinned Repositories</h3><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.pinned.svg" alt="Pinned repositories"></div>
+      <div class="card rv"><h3>Achievements</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.achievements.svg" alt="Achievements"></div>
+      <div class="card rv"><h3>Followers &amp; Following</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.people.svg" alt="People"></div>
+      <div class="card rv"><h3>Starred Repositories</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.stars.svg" alt="Starred repositories"></div>
+      <div class="card rv"><h3>Pinned Repositories</h3><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.plugin.pinned.svg" alt="Pinned repositories"></div>
     </div>
   </div>
 
   <h3 class="sub rv"><b>▸</b> Project Cards</h3>
   <div class="grid">
-    <div class="card tilt rv"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo.svg" alt="respondo"><div class="glare"></div></div>
-    <div class="card tilt rv"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-graphql.svg" alt="respondo-graphql"><div class="glare"></div></div>
-    <div class="card tilt rv"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-grpc.svg" alt="respondo-grpc"><div class="glare"></div></div>
-    <div class="card tilt rv"><img src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.spatelpatidar.svg" alt="spatelpatidar"><div class="glare"></div></div>
+    <div class="card tilt rv"><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo.svg" alt="respondo"><div class="glare"></div></div>
+    <div class="card tilt rv"><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-graphql.svg" alt="respondo-graphql"><div class="glare"></div></div>
+    <div class="card tilt rv"><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.respondo-grpc.svg" alt="respondo-grpc"><div class="glare"></div></div>
+    <div class="card tilt rv"><img loading="lazy" decoding="async" src="https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.spatelpatidar.svg" alt="spatelpatidar"><div class="glare"></div></div>
   </div>
 
   <div class="card wide-card rv">
@@ -629,7 +661,7 @@
         <picture>
           <source media="(prefers-color-scheme: dark)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native&amp;dark=true">
           <source media="(prefers-color-scheme: light)" srcset="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native">
-          <img alt="3D contribution bars" src="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native">
+          <img loading="lazy" decoding="async" alt="3D contribution bars" src="https://ssr-contributions-svg.vercel.app/_/spatelpatidar?chart=3dbar&amp;gap=0.6&amp;scale=2&amp;flatten=2&amp;animation=wave&amp;animation_duration=4&amp;animation_delay=0.06&amp;animation_amplitude=24&amp;animation_frequency=0.1&amp;animation_wave_center=0_3&amp;format=svg&amp;weeks=52&amp;theme=native">
         </picture>
       </a>
     </details>
@@ -637,8 +669,8 @@
 </section>
 
 <footer>
-  <div class="views"><img src="https://komarev.com/ghpvc/?username=spatelpatidar&amp;style=for-the-badge&amp;color=1f6feb&amp;labelColor=1c1e21&amp;label=PROFILE+VIEWS" alt="Profile views"></div>
-  <img class="wave" src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:ff6fd8,25:a855f7,50:6366f1,75:38bdf8,100:34d399&amp;height=120&amp;section=footer&amp;text=always%20learning%2C%20always%20building%20♥&amp;fontSize=20&amp;fontColor=ffffff&amp;animation=fadeIn" alt="footer">
+  <div class="views"><img loading="lazy" decoding="async" src="https://komarev.com/ghpvc/?username=spatelpatidar&amp;style=for-the-badge&amp;color=1f6feb&amp;labelColor=1c1e21&amp;label=PROFILE+VIEWS" alt="Profile views"></div>
+  <img class="wave" loading="lazy" decoding="async" src="https://capsule-render.vercel.app/api?type=waving&amp;color=0:ff6fd8,25:a855f7,50:6366f1,75:38bdf8,100:34d399&amp;height=120&amp;section=footer&amp;text=always%20learning%2C%20always%20building%20♥&amp;fontSize=20&amp;fontColor=ffffff&amp;animation=fadeIn" alt="footer">
 </footer>
 
 </div>
@@ -664,28 +696,43 @@
     if (!fromGitHub) btn.hidden = false;
   })();
 
-  /* ---------- QED background: charged particles, photon exchange, vacuum fluctuations ---------- */
+  /* ---------- QED background: charged particles, photon exchange, vacuum fluctuations ----------
+     The whole simulation + drawing now runs inside a Web Worker on an OffscreenCanvas, so
+     main-thread work (image decoding, SVG painting, layout while you scroll) can no longer
+     freeze it. Where OffscreenCanvas workers aren't supported it falls back to the main thread. */
   var mouse = { x: -999, y: -999 };
-  (function () {
-    var canvas = document.getElementById('bg');
+
+  // Self-contained on purpose: this function is stringified and run inside the worker.
+  function QEDEngine(canvas, init) {
+    var api = {
+      resize: function () {}, pointer: function () {}, scroll: function () {},
+      hidden: function () {}, reduced: function () {}
+    };
     var ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) return api;
+
+    var hasRaf = typeof requestAnimationFrame === 'function';
+    function raf(cb) { return hasRaf ? requestAnimationFrame(cb) : setTimeout(function () { cb(performance.now()); }, 16); }
+    function caf(id) { if (hasRaf) cancelAnimationFrame(id); else clearTimeout(id); }
 
     var POSITIVE_HUE = 210, NEGATIVE_HUE = 340, PHOTON_HUE = 46;
     var COULOMB_K = 2400, SOFTENING = 22 * 22, DAMPING = 0.985, THERMAL_JITTER = 0.06, MAX_SPEED = 1.8;
     var POINTER_RADIUS = 190, POINTER_STRENGTH = 70, FLOW_SPEED = 0.5, FLOW_BLEND = 0.025;
     var DESKTOP_FPS = 60, MOBILE_FPS = 40, MOBILE_BREAKPOINT = 768, MAX_DPR = 2;
+    var SCROLL_FPS = 30;              // only used by the main-thread fallback
+    var LINK_EVERY = 3;               // rebuild the photon-link graph every 3rd frame
     var MIN_AREA = 320 * 560, MAX_AREA = 1920 * 1080;
-    var MIN_PARTICLES = 24, MAX_PARTICLES = 120, MIN_LINKS = 6, MAX_LINKS = 10;
-    var MAX_VIRTUAL_MIN = 26, MAX_VIRTUAL_MAX = 64;
-    var RESIZE_DEBOUNCE_MS = 150, DIMENSION_STABLE_PX = 4;
+    var MIN_PARTICLES = 24, MAX_PARTICLES = 80, MIN_LINKS = 6, MAX_LINKS = 10;
+    var MAX_VIRTUAL_MIN = 26, MAX_VIRTUAL_MAX = 40;
+    var DIMENSION_STABLE_PX = 4;
 
     function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
 
-    var width = window.innerWidth, height = window.innerHeight;
-    var dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
-    var cores = navigator.hardwareConcurrency || 4;
+    var width = init.width, height = init.height;
+    var dpr = Math.min(init.dpr || 1, MAX_DPR);
+    var cores = (typeof navigator !== 'undefined' && navigator.hardwareConcurrency) || 4;
     var coreFactor = cores <= 4 ? 0.75 : 1;
+    var reducedMotion = !!init.reduced, pageHidden = false, scrolling = false;
 
     var maxLinksPerParticle = MIN_LINKS, maxVirtualParticles = MAX_VIRTUAL_MIN;
     var connectionDistance = 90, forceRadius = 130, virtualPairSpawnRate = 0.22, liveliness = 1.4;
@@ -708,15 +755,15 @@
 
     // "Observer effect": pointer gently pushes particles away
     var pointerX = null, pointerY = null, pointerActive = false;
-    function onPointer(e) { pointerX = e.clientX; pointerY = e.clientY; pointerActive = true; }
-    function clearPointer() { pointerActive = false; }
-
-    var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     // Pre-rendered glow sprites (no shadowBlur)
+    function makeSurface(size) {
+      var c = typeof OffscreenCanvas !== 'undefined' ? new OffscreenCanvas(size, size) : document.createElement('canvas');
+      c.width = size; c.height = size;
+      return c;
+    }
     function createGlowSprite(hue) {
-      var size = 128, sprite = document.createElement('canvas');
-      sprite.width = size; sprite.height = size;
+      var size = 128, sprite = makeSurface(size);
       var sctx = sprite.getContext('2d');
       var g = sctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
       g.addColorStop(0, 'hsla(' + hue + ', 100%, 82%, 0.55)');
@@ -808,7 +855,7 @@
       }
       var np = new Particle(isVirtual); particlePool.push(np); return np;
     }
-    function init(n) { activeParticles.length = 0; particlePool.length = 0; for (var i = 0; i < n; i++) activeParticles.push(getParticle(false)); }
+    function seed(n) { activeParticles.length = 0; particlePool.length = 0; for (var i = 0; i < n; i++) activeParticles.push(getParticle(false)); }
     function countVirtual() { var c = 0; for (var i = 0; i < activeParticles.length; i++) if (activeParticles[i].isVirtual) c++; return c; }
     function spawnVirtualPair() {
       if (countVirtual() >= maxVirtualParticles) return;
@@ -830,24 +877,17 @@
       }
     }
 
-    // Photon-exchange lines: bounded-degree nearest-neighbour graph
-    var linkCandidates = [], linkDegree = new Map();
-    function drawPhotonLine(a, b, dist) {
-      var mx = (a.x + b.x) / 2 + (Math.random() - 0.5) * 30, my = (a.y + b.y) / 2 + (Math.random() - 0.5) * 30;
-      var t = 1 - dist / connectionDistance, alpha = t * t * 0.85;
-      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(mx, my, b.x, b.y);
-      ctx.lineWidth = 2.4; ctx.strokeStyle = 'hsla(' + PHOTON_HUE + ', 95%, 70%, ' + (alpha * 0.22) + ')'; ctx.stroke();
-      ctx.lineWidth = 1; ctx.strokeStyle = 'hsla(' + PHOTON_HUE + ', 100%, 62%, ' + alpha + ')'; ctx.stroke();
-    }
-    function drawPhotonLines() {
-      linkCandidates.length = 0;
+    // Photon-exchange lines: bounded-degree nearest-neighbour graph, cached between rebuilds.
+    var linkCandidates = [], linkCache = [], linkDegree = new Map(), linkFrame = 0;
+    function rebuildLinks() {
+      linkCandidates.length = 0; linkCache.length = 0;
       var cdSq = connectionDistance * connectionDistance, i, j;
       for (i = 0; i < activeParticles.length; i++) {
         var p1 = activeParticles[i]; if (!p1.inUse || p1.isVirtual) continue;
         for (j = i + 1; j < activeParticles.length; j++) {
           var p2 = activeParticles[j]; if (!p2.inUse || p2.isVirtual) continue;
           var dx = p1.x - p2.x, dy = p1.y - p2.y, dSq = dx * dx + dy * dy;
-          if (dSq < cdSq) linkCandidates.push({ a: p1, b: p2, dist: Math.sqrt(dSq) });
+          if (dSq < cdSq) linkCandidates.push({ a: p1, b: p2, dist: Math.sqrt(dSq), ox: 0, oy: 0 });
         }
       }
       linkCandidates.sort(function (x, y) { return x.dist - y.dist; });
@@ -855,23 +895,38 @@
       for (i = 0; i < linkCandidates.length; i++) {
         var c = linkCandidates[i], da = linkDegree.get(c.a) || 0, db = linkDegree.get(c.b) || 0;
         if (da >= maxLinksPerParticle || db >= maxLinksPerParticle) continue;
-        drawPhotonLine(c.a, c.b, c.dist);
+        c.ox = (Math.random() - 0.5) * 30; c.oy = (Math.random() - 0.5) * 30;
+        linkCache.push(c);
         linkDegree.set(c.a, da + 1); linkDegree.set(c.b, db + 1);
+      }
+    }
+    function drawPhotonLines() {
+      if (linkFrame++ % LINK_EVERY === 0) rebuildLinks();
+      for (var i = 0; i < linkCache.length; i++) {
+        var c = linkCache[i], a = c.a, b = c.b;
+        if (!a.inUse || !b.inUse) continue;
+        var dist = Math.hypot(a.x - b.x, a.y - b.y);
+        if (dist >= connectionDistance) continue;
+        var t = 1 - dist / connectionDistance, alpha = t * t * 0.85;
+        var mx = (a.x + b.x) / 2 + c.ox, my = (a.y + b.y) / 2 + c.oy;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(mx, my, b.x, b.y);
+        ctx.lineWidth = 2.4; ctx.strokeStyle = 'hsla(' + PHOTON_HUE + ', 95%, 70%, ' + (alpha * 0.22) + ')'; ctx.stroke();
+        ctx.lineWidth = 1; ctx.strokeStyle = 'hsla(' + PHOTON_HUE + ', 100%, 62%, ' + alpha + ')'; ctx.stroke();
       }
     }
 
     function applyCanvasSize() {
-      dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
       canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     var rafId, lastFrameTime = 0;
     function animate(ts) {
-      rafId = requestAnimationFrame(animate);
+      rafId = raf(animate);
+      var interval = scrolling ? Math.max(frameInterval, 1000 / SCROLL_FPS) : frameInterval;
       var elapsed = ts - lastFrameTime;
-      if (elapsed < frameInterval) return;
-      lastFrameTime = ts - (elapsed % frameInterval);
+      if (elapsed < interval) return;
+      lastFrameTime = ts - (elapsed % interval);
       ctx.clearRect(0, 0, width, height);
       simTime += dt;
       if (Math.random() < virtualPairSpawnRate) spawnVirtualPair();
@@ -886,15 +941,16 @@
       ctx.clearRect(0, 0, width, height); drawPhotonLines();
       for (var i = 0; i < activeParticles.length; i++) { var p = activeParticles[i]; if (p.inUse && !p.isVirtual) p.draw(); }
     }
-    function startLoop() { if (rafId !== undefined) return; lastFrameTime = 0; rafId = requestAnimationFrame(animate); }
-    function stopLoop() { if (rafId !== undefined) { cancelAnimationFrame(rafId); rafId = undefined; } }
+    function startLoop() { if (rafId !== undefined) return; lastFrameTime = 0; rafId = raf(animate); }
+    function stopLoop() { if (rafId !== undefined) { caf(rafId); rafId = undefined; } }
 
-    var lastWidth = width, lastHeight = height, resizeTimeout;
-    function applyResize() {
-      var nw = window.innerWidth, nh = window.innerHeight;
+    var lastWidth = width, lastHeight = height;
+
+    api.resize = function (m) {
+      var nw = m.w, nh = m.h;
       var wc = Math.abs(nw - lastWidth) > DIMENSION_STABLE_PX, hc = Math.abs(nh - lastHeight) > DIMENSION_STABLE_PX;
       if (!wc && !hc) return;
-      width = nw; height = nh; applyCanvasSize();
+      width = nw; height = nh; dpr = Math.min(m.dpr || 1, MAX_DPR); applyCanvasSize();
       var i, p;
       if (!wc) { // mobile URL bar: just re-clamp
         for (i = 0; i < activeParticles.length; i++) { p = activeParticles[i]; p.x = clamp(p.x, p.radius, width - p.radius); p.y = clamp(p.y, p.radius, height - p.radius); }
@@ -907,32 +963,92 @@
       isMobile = width <= MOBILE_BREAKPOINT;
       frameInterval = 1000 / (isMobile ? MOBILE_FPS : DESKTOP_FPS); dt = frameInterval / (1000 / 60);
       for (i = 0; i < activeParticles.length; i++) { p = activeParticles[i]; p.x = clamp(p.x, p.radius, width - p.radius); p.y = clamp(p.y, p.radius, height - p.radius); }
+      linkFrame = 0;
       lastWidth = nw; lastHeight = nh;
-    }
+    };
+    api.pointer = function (m) { pointerX = m.x; pointerY = m.y; pointerActive = !!m.a; };
+    api.scroll = function (m) { scrolling = !!m.s; };
+    api.hidden = function (m) {
+      pageHidden = !!m.h;
+      if (pageHidden) stopLoop(); else if (!reducedMotion) startLoop();
+    };
+    api.reduced = function (m) {
+      reducedMotion = !!m.r;
+      if (reducedMotion) { stopLoop(); renderStaticFrame(); } else if (!pageHidden) startLoop();
+    };
 
     applyCanvasSize();
     var d0 = computeDensity(width, height);
     maxLinksPerParticle = d0.maxLinks; maxVirtualParticles = d0.maxVirtual; connectionDistance = d0.connectionDistance;
     forceRadius = d0.forceRadius; virtualPairSpawnRate = d0.spawnRate; liveliness = d0.liveliness;
-    init(d0.particleCount);
+    seed(d0.particleCount);
+    if (reducedMotion) renderStaticFrame(); else startLoop();
+    return api;
+  }
 
-    window.addEventListener('resize', function () { clearTimeout(resizeTimeout); resizeTimeout = setTimeout(applyResize, RESIZE_DEBOUNCE_MS); });
+  (function () {
+    var canvas = document.getElementById('bg'); if (!canvas) return;
+    var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var initMsg = { t: 'init', width: window.innerWidth, height: window.innerHeight, dpr: window.devicePixelRatio || 1, reduced: motionQuery.matches };
+    var worker = null, engine = null, inWorker = false;
+
+    if (window.Worker && window.OffscreenCanvas && canvas.transferControlToOffscreen) {
+      try {
+        var src = 'var engine;onmessage=function(e){var m=e.data;' +
+                  'if(m.t==="init"){engine=(' + QEDEngine.toString() + ')(m.canvas,m);}' +
+                  'else if(engine&&engine[m.t]){engine[m.t](m);}};';
+        worker = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+        var off = canvas.transferControlToOffscreen();
+        initMsg.canvas = off;
+        worker.postMessage(initMsg, [off]);
+        inWorker = true;
+      } catch (err) { worker = null; inWorker = false; }
+    }
+    if (!inWorker) engine = QEDEngine(canvas, initMsg);
+
+    function send(t, data) {
+      data = data || {}; data.t = t;
+      if (inWorker) worker.postMessage(data);
+      else if (engine && engine[t]) engine[t](data);
+    }
+
+    var resizeTimeout;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(function () { send('resize', { w: window.innerWidth, h: window.innerHeight, dpr: window.devicePixelRatio || 1 }); }, 150);
+    });
+    function onPointer(e) { send('pointer', { x: e.clientX, y: e.clientY, a: true }); }
+    function clearPointer() { send('pointer', { x: 0, y: 0, a: false }); }
     window.addEventListener('pointermove', onPointer, { passive: true });
     window.addEventListener('pointerdown', onPointer, { passive: true });
     window.addEventListener('pointerleave', clearPointer, { passive: true });
     window.addEventListener('blur', clearPointer);
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) stopLoop(); else if (!motionQuery.matches) startLoop();
-    });
-    motionQuery.addEventListener('change', function (e) {
-      if (e.matches) { stopLoop(); renderStaticFrame(); } else if (!document.hidden) startLoop();
-    });
-    if (motionQuery.matches) renderStaticFrame(); else if (!document.hidden) startLoop();
+    document.addEventListener('visibilitychange', function () { send('hidden', { h: document.hidden }); });
+    motionQuery.addEventListener('change', function (e) { send('reduced', { r: e.matches }); });
+    if (document.hidden) send('hidden', { h: true });
+
+    // Only the main-thread fallback needs to back off while scrolling; the worker doesn't.
+    if (!inWorker) {
+      var scrollTimer;
+      window.addEventListener('scroll', function () {
+        send('scroll', { s: true }); clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(function () { send('scroll', { s: false }); }, 150);
+      }, { passive: true });
+    }
   })();
 
   /* ---------- cursor glow + tilt cards ---------- */
   var glow = document.getElementById('glow');
-  addEventListener('mousemove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; });
+  // PERF: transform only (compositor), batched to one update per frame
+  var glowX = -999, glowY = -999, glowQueued = false;
+  addEventListener('mousemove', function (e) {
+    mouse.x = e.clientX; mouse.y = e.clientY; glowX = e.clientX; glowY = e.clientY;
+    if (glowQueued) return; glowQueued = true;
+    requestAnimationFrame(function () {
+      glowQueued = false;
+      glow.style.transform = 'translate(' + glowX + 'px,' + glowY + 'px) translate(-50%,-50%)';
+    });
+  }, { passive: true });
   if (!reduce && matchMedia('(hover:hover)').matches) {
     document.querySelectorAll('.tilt').forEach(function (c) {
       c.addEventListener('mousemove', function (e) {
@@ -946,13 +1062,36 @@
   }
 
   /* ---------- scroll progress + active nav ---------- */
+  // PERF: layout reads are batched into one requestAnimationFrame per frame instead of
+  // running (and forcing layout) on every raw scroll event.
   var prog = document.getElementById('progress'), links = [].slice.call(document.querySelectorAll('#hud a'));
   var secs = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
-  addEventListener('scroll', function () {
+  var scrollQueued = false;
+  function onScrollFrame() {
+    scrollQueued = false;
     var h = document.documentElement; prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + '%';
     var cur = 0; secs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top < innerHeight * .4) cur = i; });
     links.forEach(function (a, i) { a.classList.toggle('on', i === cur); });
+  }
+  addEventListener('scroll', function () {
+    if (scrollQueued) return; scrollQueued = true; requestAnimationFrame(onScrollFrame);
   }, { passive: true });
+
+  /* ---------- hamburger menu (narrow screens) ---------- */
+  (function () {
+    var btn = document.getElementById('menu-btn'), hud = document.getElementById('hud');
+    if (!btn || !hud) return;
+    function set(open) {
+      hud.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    btn.addEventListener('click', function (e) { e.stopPropagation(); set(!hud.classList.contains('open')); });
+    hud.addEventListener('click', function (e) { if (e.target.closest('a')) set(false); });
+    document.addEventListener('click', function (e) { if (!e.target.closest('#hud')) set(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') set(false); });
+    matchMedia('(min-width:861px)').addEventListener('change', function (e) { if (e.matches) set(false); });
+  })();
 
   /* ---------- reveal, counters, meters ---------- */
   function count(el) {
