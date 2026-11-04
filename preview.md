@@ -42,3 +42,18 @@
 ### `metrics/metrics.template.repository.spatelpatidar.svg`
 ![metrics/metrics.template.repository.spatelpatidar.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/metrics.template.repository.spatelpatidar.svg)
 
+### `metrics/repobeats.respondo-graphql.svg`
+![metrics/repobeats.respondo-graphql.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/repobeats.respondo-graphql.svg)
+
+### `metrics/repobeats.respondo-grpc.dark90.svg`
+![metrics/repobeats.respondo-grpc.dark90.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/repobeats.respondo-grpc.dark90.svg)
+
+### `metrics/repobeats.respondo-grpc.svg`
+![metrics/repobeats.respondo-grpc.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/repobeats.respondo-grpc.svg)
+
+### `metrics/repobeats.respondo.svg`
+![metrics/repobeats.respondo.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/repobeats.respondo.svg)
+
+### `metrics/repobeats.spatelpatidar.svg`
+![metrics/repobeats.spatelpatidar.svg](https://raw.githubusercontent.com/spatelpatidar/spatelpatidar/output/metrics/repobeats.spatelpatidar.svg)
+
