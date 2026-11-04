@@ -1194,5 +1194,408 @@
   (function tick() { clock.textContent = new Date().toLocaleTimeString([], { hour12: false }); setTimeout(tick, 1000); })();
 })();
 </script>
+
+<!-- ===== TERMINAL WIDGET: paste this whole block right before </body> in index.html ===== -->
+<style>
+  /* Stage Manager style thumbnail on the left edge */
+  .tty-dock { position:fixed; left:8px; top:50%; margin-top:-48px; width:124px; height:96px; z-index:1650; padding:0; overflow:hidden; display:flex; flex-direction:column; text-align:left;
+    border-radius:12px; background:var(--panel); border:1px solid var(--line); cursor:pointer; box-shadow:0 10px 30px rgba(0,0,0,.45);
+    transform:perspective(700px) rotateY(22deg); transform-origin:left center;
+    transition:transform .35s cubic-bezier(.2,.9,.25,1), box-shadow .3s, border-color .3s;
+    animation:ttyDockIn .5s cubic-bezier(.2,.9,.25,1); }
+  .tty-dock:hover, .tty-dock:focus-visible { transform:perspective(700px) rotateY(0deg) translateX(6px) scale(1.07); border-color:var(--accent);
+    box-shadow:0 14px 40px rgba(0,0,0,.5), 0 0 30px color-mix(in srgb,var(--accent) 35%, transparent); outline:none; }
+  .tty-thumb-bar { flex:none; display:flex; gap:4px; padding:6px 8px; border-bottom:1px solid var(--line); background:rgba(255,255,255,.03); }
+  .tty-thumb-bar i { width:6px; height:6px; border-radius:50%; display:block; }
+  .tty-thumb-bar i:nth-child(1) { background:#ff5f57; } .tty-thumb-bar i:nth-child(2) { background:#febc2e; } .tty-thumb-bar i:nth-child(3) { background:#61c554; }
+  .tty-thumb-body { flex:1; min-height:0; padding:6px 8px; overflow:hidden; white-space:pre; pointer-events:none; font:500 7px/1.55 var(--mono); color:var(--muted); }
+  /* idle launcher, bottom-left */
+  .tty-launch { position:fixed; left:14px; bottom:calc(18px + env(safe-area-inset-bottom, 0px)); z-index:1650; display:inline-flex; align-items:center; gap:10px; padding:10px 16px 10px 12px;
+    border-radius:12px; background:color-mix(in srgb,var(--panel) 85%, transparent); backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
+    border:1px solid var(--line); color:var(--head); font:600 12px var(--mono); cursor:pointer; box-shadow:0 8px 28px rgba(0,0,0,.4);
+    animation:ttyLaunchIn .45s cubic-bezier(.2,.9,.25,1); transition:border-color .2s, box-shadow .2s, transform .2s; }
+  .tty-launch:hover, .tty-launch:focus-visible { border-color:var(--accent); transform:translateY(-2px); outline:none; box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 35%, transparent); }
+  .tty-launch b { color:var(--accent); font-weight:700; }
+  .tty-launch.off, .tty-dock.off { visibility:hidden; pointer-events:none; }
+  @keyframes ttyLaunchIn { from { transform:translateX(-130%); opacity:0; } }
+  @keyframes ttyDockIn { from { transform:perspective(700px) rotateY(22deg) translateX(-140%); opacity:0; } }
+
+  .tty-backdrop { position:fixed; inset:0; z-index:3050; background:rgba(6,0,16,.58); backdrop-filter:blur(10px) saturate(140%); -webkit-backdrop-filter:blur(10px) saturate(140%); opacity:0; transition:opacity .3s ease; }
+  .tty-backdrop[hidden] { display:none; }
+  .tty-backdrop.on { opacity:1; }
+  @media (prefers-color-scheme: light) { .tty-backdrop { background:rgba(222,229,246,.6); } }
+
+  #tty-win { position:fixed; inset:0; margin:auto; z-index:3100; width:min(900px,94vw); height:min(600px,86vh); display:flex; flex-direction:column; padding:0; overflow:hidden; text-align:left; outline:none;
+    transition:width .3s ease, height .3s ease;
+    box-shadow:0 30px 120px rgba(0,0,0,.6), 0 0 70px color-mix(in srgb,var(--accent) 22%, transparent); }
+  #tty-win[hidden] { display:none; }
+  #tty-win.max { width:96vw; height:92vh; }
+  #tty-win .dots i { cursor:pointer; }
+  #tty-win .dots i:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  #tty-win .term-bar { flex:none; }
+  .tty-body { flex:1; min-height:0; display:flex; flex-direction:column; padding:16px 18px 14px; font:400 13.5px/1.65 var(--mono); }
+  .tty-out { flex:1; min-height:0; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--line) transparent; overscroll-behavior:contain; cursor:text; }
+  .tty-out .ln { white-space:pre-wrap; word-break:break-word; min-height:1.65em; }
+  .tty-out .dim { color:var(--muted); } .tty-out .hi { color:var(--accent); } .tty-out .ok { color:var(--c1); } .tty-out .err { color:#ff7b72; }
+  .tty-out b { color:var(--head); font-weight:600; }
+  .tty-out a { text-decoration:underline; text-underline-offset:3px; }
+  .tty-ps { color:var(--c1); }
+  .tty-form { display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .tty-form .tty-ps { flex:none; }
+  .tty-input { flex:1; min-width:0; background:transparent; border:0; outline:0; color:var(--head); font:inherit; caret-color:var(--accent); padding:4px 0; }
+  .tty-chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); }
+  .tty-chips button { font:600 12px var(--mono); color:var(--muted); background:transparent; border:1px solid var(--line); border-radius:999px; padding:6px 12px; cursor:pointer; transition:color .2s, border-color .2s, background .2s; }
+  .tty-chips button:hover { color:var(--head); border-color:var(--accent); background:color-mix(in srgb,var(--accent) 14%, transparent); }
+  .tty-chips button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .tty-hint { color:var(--muted); font:500 12px var(--mono); margin:12px 0 0; }
+  @media (max-width:600px) {
+    #tty-win, #tty-win.max { width:96vw; height:88dvh; }
+    .tty-body { padding:14px 12px; font-size:12.5px; } .tty-input { font-size:16px; } .tty-hint { display:none; }
+    .tty-dock { left:4px; width:88px; height:72px; margin-top:-36px; } .tty-thumb-body { font-size:6px; }
+    .tty-launch span { display:none; } .tty-launch { padding:10px 14px; }
+  }
+</style>
+<script>
+function ttyInit() {
+  if (document.getElementById('tty-win') || !document.body) return;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var PS = 'guest@shailendra:~$';
+
+  /* ---------- data ---------- */
+  var PKGS = [
+    { n: 'respondo', t: 'Ruby', u: 'https://rubygems.org/gems/respondo', d: 'Standardizes JSON API responses across Rails apps.', s: '2000+ downloads' },
+    { n: 'respondo-graphql', t: 'Ruby', u: 'https://rubygems.org/gems/respondo-graphql', d: 'Consistent GraphQL-spec responses for Rails controllers.', s: '600+ downloads' },
+    { n: 'auditron', t: 'Ruby', u: 'https://rubygems.org/gems/auditron', d: 'Tracks who changed what on any ActiveRecord model.', s: '400+ downloads' },
+    { n: 'app_snackbar', t: 'Dart', u: 'https://pub.dev/packages/app_snackbar', d: 'Lightweight, customizable Flutter snackbars.', s: '300+ downloads' },
+    { n: 'swift_field', t: 'Dart', u: 'https://pub.dev/packages/swift_field', d: 'Zero-dependency Flutter form widgets, pin fields, searchable dropdowns.', s: 'published' }
+  ];
+  var WIP = [
+    { n: 'idempo', p: 90, u: 'https://github.com/spatelpatidar/idempo', d: 'Opt-in idempotency for controllers, jobs and webhooks.' },
+    { n: 'param_guard', p: 60, u: 'https://github.com/spatelpatidar/param_guard', d: 'Parameter validation and sanitization for Rails.' },
+    { n: 'authify', p: 30, u: '', d: 'JWT and session auth for Rails APIs.' }
+  ];
+  var STACK = [
+    ['🌸 Languages', 'Ruby, Dart, Python, Java, C++, C'],
+    ['🚀 Backend & Frameworks', 'Ruby on Rails, Flutter, GraphQL'],
+    ['🗄️ Databases & Backend Services', 'PostgreSQL, MySQL, SQLite, Redis, Firebase, Supabase'],
+    ['🎨 Frontend', 'HTML5, CSS3, JavaScript'],
+    ['🛠️ DevOps & Tools', 'Docker, Git, GitHub, GitLab, Linux, VS Code, Postman, Cloudflare, Swagger, Render, Railway'],
+    ['📚 Currently Learning', 'Rust, Go, GraphQL, React']
+  ];
+  var LINKS = [
+    ['github', 'https://github.com/spatelpatidar'],
+    ['linkedin', 'https://www.linkedin.com/in/shailendra-kumar-07s/'],
+    ['rubygems', 'https://rubygems.org/profiles/spatelpatidar'],
+    ['email', 'mailto:shailendrapatidar00@gmail.com']
+  ];
+  var SECTIONS = ['home', 'about', 'stack', 'packages', 'stats'];
+
+  /* ---------- DOM ---------- */
+  function mk(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  var dock = mk('button', 'tty-dock'); dock.type = 'button'; dock.setAttribute('aria-label', 'Open terminal'); dock.title = 'Open terminal';
+  var thumbBar = mk('div', 'tty-thumb-bar'); thumbBar.appendChild(mk('i')); thumbBar.appendChild(mk('i')); thumbBar.appendChild(mk('i'));
+  var thumbBody = mk('div', 'tty-thumb-body');
+  dock.appendChild(thumbBar); dock.appendChild(thumbBody);
+  function updateThumb() {                      // tiny live preview of the last lines
+    var rows = out.querySelectorAll('.ln'), txt = [];
+    for (var i = Math.max(0, rows.length - 7); i < rows.length; i++) { var t = rows[i].textContent; if (t.trim()) txt.push(t.slice(0, 24)); }
+    thumbBody.textContent = txt.slice(-6).join('\n');
+  }
+
+  dock.classList.add('off');                    // thumbnail only appears after yellow (minimise)
+  var launch = mk('button', 'tty-launch'); launch.type = 'button'; launch.setAttribute('aria-label', 'Open terminal'); launch.title = 'Open terminal';
+  launch.appendChild(mk('b', '', '>_')); launch.appendChild(mk('span', '', 'terminal'));
+
+  var backdrop = mk('div', 'tty-backdrop'); backdrop.hidden = true;
+
+  var win = mk('div', 'card'); win.id = 'tty-win'; win.hidden = true; win.tabIndex = -1;
+  win.setAttribute('role', 'dialog'); win.setAttribute('aria-modal', 'true'); win.setAttribute('aria-label', 'Terminal');
+  win.innerHTML =
+    '<div class="term-bar"><div class="dots"><i></i><i></i><i></i></div><span>guest@shailendra:~</span></div>' +
+    '<div class="tty-body">' +
+      '<div class="tty-out" role="log" aria-live="polite"></div>' +
+      '<form class="tty-form" autocomplete="off"><label class="tty-ps" for="tty-input">' + PS + '</label>' +
+      '<input class="tty-input" id="tty-input" type="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="Type a command"></form>' +
+      '<div class="tty-chips" aria-label="Quick commands"></div>' +
+      '<p class="tty-hint">Tab completes · ↑ ↓ history · Ctrl+C cancel · Ctrl+L clear · type <b>help</b></p>' +
+    '</div>';
+
+  document.body.appendChild(launch); document.body.appendChild(dock); document.body.appendChild(backdrop); document.body.appendChild(win);
+
+  var out = win.querySelector('.tty-out'), form = win.querySelector('.tty-form'), input = win.querySelector('.tty-input'), chipBox = win.querySelector('.tty-chips');
+  var dots = win.querySelectorAll('.dots i'), dotLabels = ['Close (reset)', 'Minimise', 'Maximise'];
+  dots.forEach(function (d, i) { d.setAttribute('role', 'button'); d.tabIndex = 0; d.setAttribute('aria-label', dotLabels[i]); d.title = dotLabels[i]; });
+
+  /* ---------- three states: idle (launcher bottom-left) / open (modal) / min (thumbnail on the left) ---------- */
+  var state = 'idle', busy = false;
+  // size/position of a corner element WITHOUT its 3D tilt, so the window can land exactly on it
+  function flatRect(el) {
+    var t = el.style.transition, an = el.style.animation;
+    el.style.transition = 'none'; el.style.animation = 'none'; el.style.transform = 'none';
+    var r = el.getBoundingClientRect();
+    el.style.transform = ''; void el.offsetWidth; el.style.transition = t; el.style.animation = an;
+    return r;
+  }
+  // un-hide the corner element; the thumbnail eases from flat into its tilt so there is no pop
+  function reveal(el) {
+    if (!el.classList.contains('off')) return;
+    if (el === dock) el.style.transform = 'perspective(700px) rotateY(0deg)';
+    el.classList.remove('off'); void el.offsetWidth; el.style.transform = '';
+  }
+  function flip(src, dst) {
+    var sx = src.width / dst.width, sy = src.height / dst.height;
+    var dx = (src.left + src.width / 2) - (dst.left + dst.width / 2);
+    var dy = (src.top + src.height / 2) - (dst.top + dst.height / 2);
+    return 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')';
+  }
+  function openTerm() {
+    if (state === 'open' || busy) return;
+    var from = flatRect(state === 'min' ? dock : launch);
+    if (win.getAnimations) win.getAnimations().forEach(function (a) { a.cancel(); });
+    state = 'open'; launch.classList.add('off'); dock.classList.add('off');
+    backdrop.hidden = false; win.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    void backdrop.offsetWidth; backdrop.classList.add('on');
+    if (!reduce && win.animate) win.animate([{ transform: flip(from, win.getBoundingClientRect()), opacity: .5 }, { transform: 'none', opacity: 1 }],
+      { duration: 420, easing: 'cubic-bezier(.2,.9,.25,1)' });
+    out.scrollTop = out.scrollHeight;
+    input.focus({ preventScroll: true });
+  }
+  // fly the window into `target` (launcher or thumbnail), then settle into `next`
+  function leave(target, next) {
+    if (state !== 'open' || busy) return; busy = true;
+    document.documentElement.style.overflow = '';      // lets goto scroll straight away
+    backdrop.classList.remove('on');
+    var to = flatRect(target), now = win.getBoundingClientRect(), dur = 400, timer;
+    function done() {
+      clearTimeout(timer);
+      win.hidden = true; backdrop.hidden = true; state = next; busy = false;
+      if (next === 'idle') resetSession(); else updateThumb();
+      reveal(target);
+    }
+    if (!reduce && win.animate) {
+      // stays fully visible while it travels; the corner element fades in underneath near the end
+      var a = win.animate([{ transform: 'none', opacity: 1 }, { transform: flip(to, now), opacity: 1, offset: .78 }, { transform: flip(to, now), opacity: 0 }],
+        { duration: dur, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'forwards' });
+      timer = setTimeout(function () { reveal(target); }, dur * .66);
+      a.onfinish = done;
+    } else done();
+  }
+  function minimiseTerm() { updateThumb(); leave(dock, 'min'); }   // keeps the whole session
+  function closeTerm() { leave(launch, 'idle'); }                    // wipes the session
+  launch.addEventListener('click', openTerm);
+  dock.addEventListener('click', openTerm);
+  backdrop.addEventListener('click', minimiseTerm);
+  dots[0].addEventListener('click', closeTerm);
+  dots[1].addEventListener('click', minimiseTerm);
+  dots[2].addEventListener('click', function () { var m = win.classList.toggle('max'); dots[2].classList.toggle('min', m); setTimeout(function () { out.scrollTop = out.scrollHeight; }, 320); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && state === 'open') minimiseTerm();
+    if (e.key === 'Tab' && state === 'open') {          // keep focus inside the window
+      var f = win.querySelectorAll('input,button,a[href],[tabindex="0"]'); if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === win)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  /* ---------- output helpers ---------- */
+  // segments: plain string, {t:text, c:class, b:bold}, or {l:label, u:url}
+  function line() {
+    var d = mk('div', 'ln');
+    for (var i = 0; i < arguments.length; i++) {
+      var s = arguments[i];
+      if (typeof s === 'string') d.appendChild(document.createTextNode(s));
+      else if (s.u) { var a = mk('a', s.c, s.l); a.href = s.u; if (s.u.indexOf('http') === 0) { a.target = '_blank'; a.rel = 'noopener noreferrer'; } d.appendChild(a); }
+      else d.appendChild(mk(s.b ? 'b' : 'span', s.c, s.t));
+    }
+    out.appendChild(d); return d;
+  }
+  function blank() { line(''); }
+  function pad(s, n) { while (s.length < n) s += ' '; return s; }
+  function bar(p) { var n = Math.round(p / 10); return '[' + new Array(n + 1).join('#') + new Array(11 - n).join('.') + '] ' + p + '%'; }
+  function find(list, name) { name = (name || '').toLowerCase(); for (var i = 0; i < list.length; i++) if (list[i].n.toLowerCase() === name) return list[i]; return null; }
+
+  /* ---------- commands ---------- */
+  var hist = [], hi = 0, draft = '';
+
+  // same content as the About / Tech Stack sections on the page
+  function showWhoami() {
+    line("Hi! I'm ", { t: 'Shailendra', b: 1 }, ', a backend developer who lives and breathes ', { t: 'Ruby on Rails', b: 1 }, ', with a growing love for ', { t: 'Flutter', b: 1 }, '.');
+    line('I care about clean APIs, test-driven code, and shipping tools that solve real problems — even the small ones.');
+  }
+  function showStatus() {
+    line('🔭  ', { t: 'Backend Developer', b: 1 }, ' with ', { t: '3+ years', b: 1 }, ' in Ruby on Rails');
+    line('🌱  Currently learning ', { t: 'Flutter, Rust, GraphQL, Go', b: 1 });
+    line('📦  Published ', { l: 'respondo', u: PKGS[0].u, c: 'hi' }, ' — 2000+ organic downloads on RubyGems');
+    line('📦  Published ', { l: 'respondo-graphql', u: PKGS[1].u, c: 'hi' }, ' — 600+ organic downloads on RubyGems');
+    line('🚀  Published ', { l: 'auditron', u: PKGS[2].u, c: 'hi' }, ' — tracks who changed what on any ActiveRecord model, 400+ downloads');
+    line('📦  Published ', { l: 'app_snackbar', u: PKGS[3].u, c: 'hi' }, ' — 300+ organic downloads on pub.dev');
+    line('🚀  Published ', { l: 'swift_field', u: PKGS[4].u, c: 'hi' }, ' — zero-dependency Flutter form widgets, pin fields, searchable dropdowns');
+    line('💬  Ask me about ', { t: 'Ruby on Rails, REST APIs, PostgreSQL, Firebase', b: 1 });
+  }
+  function showStack() {
+    STACK.forEach(function (g, i) { if (i) blank(); line({ t: g[0], b: 1 }); line('    ' + g[1]); });
+  }
+  function listPkgs() {
+    PKGS.forEach(function (p) { line({ l: p.n, u: p.u, c: 'hi' }, '  ', { t: p.t + ' · ' + p.s, c: 'dim' }); line('  ' + p.d); });
+    blank(); line({ t: 'Tip: ', c: 'dim' }, 'cat <name> for details, open <name> to visit it.');
+  }
+  function listWip() {
+    WIP.forEach(function (w) { line({ t: pad(w.n, 12), c: 'hi' }, bar(w.p)); line('  ' + w.d); });
+  }
+
+  var cmds = {
+    help: { d: 'list all commands', f: function () {
+      line({ t: 'Available commands', b: 1 });
+      [['whoami', 'about me — same as the About section'],
+       ['cat status.log', 'the status log from the About section'],
+       ['cat tech-stack.sh', 'the Tech Stack section'],
+       ['cat <package>', 'details for one package or gem'],
+       ['ls', 'list files'],
+       ['ls packages', 'published packages and gems'],
+       ['ls wip', 'gems in progress'],
+       ['open <name>', 'open a package, github, linkedin or email'],
+       ['contact', 'ways to reach me'],
+       ['links', 'all profile links'],
+       ['goto <section>', 'scroll the page: ' + SECTIONS.join(', ')],
+       ['history', 'commands you have run'],
+       ['date', 'current local time'],
+       ['clear', 'clear the screen (Ctrl+L)'],
+       ['exit', 'close the terminal and reset it']
+      ].forEach(function (r) { line('  ', { t: pad(r[0], 19), c: 'hi' }, { t: r[1], c: 'dim' }); });
+    } },
+    whoami: { d: 'about me', f: showWhoami },
+    cat: { d: 'cat <status.log|tech-stack.sh|package>', f: function (a) {
+      if (!a[0]) return line({ t: 'usage: cat <status.log | tech-stack.sh | package>', c: 'err' });
+      var f = a[0].toLowerCase();
+      if (f === 'status.log') return showStatus();
+      if (f === 'tech-stack.sh') return showStack();
+      var p = find(PKGS, a[0]), w = find(WIP, a[0]);
+      if (p) { line({ t: p.n, b: 1 }, '  ', { t: p.t, c: 'dim' }); line(p.d); line({ t: 'downloads: ', c: 'dim' }, p.s); line({ t: 'url: ', c: 'dim' }, { l: p.u, u: p.u }); }
+      else if (w) { line({ t: w.n, b: 1 }, '  ', { t: 'in progress', c: 'dim' }); line(w.d); line({ t: 'progress: ', c: 'dim' }, bar(w.p)); line({ t: 'url: ', c: 'dim' }, w.u ? { l: w.u, u: w.u } : 'not public yet'); }
+      else line({ t: 'cat: ' + a[0] + ': No such file or directory', c: 'err' });
+    } },
+    ls: { d: 'ls [packages|wip]', f: function (a) {
+      var t = (a[0] || '').replace('/', '').toLowerCase();
+      if (!t) line('status.log  tech-stack.sh  ', { t: 'packages/', c: 'hi' }, '  ', { t: 'wip/', c: 'hi' });
+      else if (t === 'packages') listPkgs();
+      else if (t === 'wip') listWip();
+      else line({ t: "ls: cannot access '" + a[0] + "': No such file or directory", c: 'err' });
+    } },
+    about: { hide: 1, f: showStatus },
+    skills: { hide: 1, f: showStack },
+    projects: { hide: 1, f: listPkgs },
+    wip: { hide: 1, f: listWip },
+    open: { d: 'open <name|github|linkedin|email>', f: function (a) {
+      if (!a[0]) return line({ t: 'usage: open <name>   (a package, github, linkedin, rubygems, email)', c: 'err' });
+      var key = a[0].toLowerCase(), url = '', i;
+      for (i = 0; i < LINKS.length; i++) if (LINKS[i][0] === key) url = LINKS[i][1];
+      var p = find(PKGS, key) || find(WIP, key); if (!url && p) url = p.u;
+      if (!url) return line({ t: p ? p.n + ' has no public page yet.' : 'open: ' + a[0] + ': not found', c: 'err' });
+      line({ t: 'opening ', c: 'dim' }, { l: url, u: url });
+      if (url.indexOf('mailto:') === 0) location.href = url; else window.open(url, '_blank', 'noopener,noreferrer');
+    } },
+    contact: { d: 'ways to reach me', f: function () {
+      line({ t: pad('email', 10), c: 'hi' }, { l: 'shailendrapatidar00@gmail.com', u: 'mailto:shailendrapatidar00@gmail.com' });
+      line({ t: pad('linkedin', 10), c: 'hi' }, { l: 'shailendra-kumar-07s', u: LINKS[1][1] });
+      line({ t: pad('github', 10), c: 'hi' }, { l: 'spatelpatidar', u: LINKS[0][1] });
+    } },
+    links: { d: 'all profile links', f: function () { LINKS.forEach(function (l) { line({ t: pad(l[0], 10), c: 'hi' }, { l: l[1], u: l[1] }); }); } },
+    goto: { d: 'goto <section> — scroll the page, terminal docks', f: function (a) {
+      var id = (a[0] || '').replace('/', '').toLowerCase(), el = SECTIONS.indexOf(id) > -1 && document.getElementById(id);
+      if (!el) return line({ t: 'usage: goto <' + SECTIONS.join('|') + '>', c: 'err' });
+      minimiseTerm();
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+    } },
+    date: { d: 'current local time', f: function () { line(new Date().toString()); } },
+    history: { d: 'commands you have run', f: function () { if (!hist.length) line({ t: 'nothing yet', c: 'dim' }); hist.forEach(function (h, i) { line({ t: pad(String(i + 1), 4), c: 'dim' }, h); }); } },
+    clear: { d: 'clear the screen', f: function () { out.textContent = ''; } },
+    exit: { d: 'close the terminal (clears the session)', f: function () { closeTerm(); } },
+    sudo: { hide: 1, f: function () { line({ t: 'guest is not in the sudoers file. This incident will be reported.', c: 'err' }); } },
+    rm: { hide: 1, f: function () { line({ t: 'nice try. Everything here is read-only.', c: 'err' }); } }
+  };
+
+  function run(raw) {
+    var cmd = raw.trim();
+    line({ t: PS + ' ', c: 'tty-ps' }, cmd);
+    if (!cmd) return;
+    if (hist[hist.length - 1] !== cmd) hist.push(cmd);
+    hi = hist.length; draft = '';
+    var parts = cmd.split(/\s+/), name = parts.shift().toLowerCase();
+    if (cmds[name]) cmds[name].f(parts);
+    else {
+      var near = Object.keys(cmds).filter(function (k) { return !cmds[k].hide && k.indexOf(name) === 0; })[0];
+      line({ t: 'command not found: ' + name + '.', c: 'err' }, near ? ' Did you mean ' : ' Type ', { t: near || 'help', c: 'hi' }, near ? '?' : ' to see commands.');
+    }
+    out.scrollTop = out.scrollHeight;
+  }
+
+  function complete() {
+    var v = input.value, sp = v.indexOf(' '), pool, base, frag;
+    if (sp < 0) { pool = Object.keys(cmds).filter(function (k) { return !cmds[k].hide; }); base = ''; frag = v.toLowerCase(); }
+    else {
+      var c = v.slice(0, sp).toLowerCase(); base = v.slice(0, sp + 1); frag = v.slice(sp + 1).toLowerCase();
+      var names = PKGS.concat(WIP).map(function (p) { return p.n; });
+      pool = c === 'goto' ? SECTIONS
+        : c === 'cat' ? ['status.log', 'tech-stack.sh'].concat(names)
+        : c === 'open' ? names.concat(LINKS.map(function (l) { return l[0]; }))
+        : c === 'ls' ? ['packages', 'wip']
+        : [];
+    }
+    var hits = pool.filter(function (k) { return k.toLowerCase().indexOf(frag) === 0; });
+    if (hits.length === 1) input.value = base + hits[0] + ' ';
+    else if (hits.length > 1) { line({ t: PS + ' ', c: 'tty-ps' }, v); line({ t: hits.join('   '), c: 'dim' }); out.scrollTop = out.scrollHeight; }
+  }
+
+  form.addEventListener('submit', function (e) { e.preventDefault(); var v = input.value; input.value = ''; run(v); });
+  function setLine(v) { input.value = v; input.setSelectionRange(v.length, v.length); }
+  input.addEventListener('keydown', function (e) {
+    var k = e.key;
+    if (k === 'Tab') { e.preventDefault(); complete(); }
+    else if (k === 'ArrowUp') {                         // older command, stops at the oldest
+      e.preventDefault(); if (!hist.length) return;
+      if (hi === hist.length) draft = input.value;
+      if (hi > 0) hi--; setLine(hist[hi]);
+    } else if (k === 'ArrowDown') {                     // newer command, then back to what you were typing
+      e.preventDefault(); if (hi >= hist.length) return;
+      hi++; setLine(hi === hist.length ? draft : hist[hi]);
+    } else if (e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
+      var c = k.toLowerCase(), n = input.value.length;
+      if (c === 'l') { e.preventDefault(); cmds.clear.f(); }
+      else if (c === 'c' && input.selectionStart === input.selectionEnd) {
+        e.preventDefault(); line({ t: PS + ' ', c: 'tty-ps' }, input.value + '^C');
+        setLine(''); hi = hist.length; draft = ''; out.scrollTop = out.scrollHeight;
+      }
+      else if (c === 'u') { e.preventDefault(); input.value = input.value.slice(input.selectionStart); input.setSelectionRange(0, 0); }
+      else if (c === 'a') { e.preventDefault(); input.setSelectionRange(0, 0); }
+      else if (c === 'e') { e.preventDefault(); input.setSelectionRange(n, n); }
+    }
+  });
+  out.addEventListener('click', function (e) { if (!e.target.closest('a') && !getSelection().toString()) input.focus({ preventScroll: true }); });
+
+  ['help', 'whoami', 'cat status.log', 'cat tech-stack.sh', 'ls packages', 'ls wip', 'contact', 'clear'].forEach(function (c) {
+    var b = mk('button', '', c); b.type = 'button';
+    b.addEventListener('click', function () { run(c); input.focus({ preventScroll: true }); });
+    chipBox.appendChild(b);
+  });
+
+  function welcome() {
+    out.textContent = '';
+    line({ t: 'Shailendra Kumar — portfolio shell v1.0', b: 1 });
+    line({ t: 'Type ', c: 'dim' }, { t: 'help', c: 'hi' }, { t: ' or tap a command below. Links in the output are clickable.', c: 'dim' });
+    blank(); updateThumb();
+  }
+  function resetSession() {                       // red button: fresh terminal, like first visit
+    hist = []; hi = 0; draft = ''; input.value = '';
+    win.classList.remove('max'); dots[2].classList.remove('min');
+    welcome();
+  }
+  welcome();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ttyInit); else ttyInit();
+</script>
+
 </body>
 </html>

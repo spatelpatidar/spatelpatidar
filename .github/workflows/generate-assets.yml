@@ -208,6 +208,64 @@ jobs:
           filename: metrics.template.repository.respondo-grpc.svg
           output_action: none
 
+      # ---------- Repobeats (own Docker action, no OAuth login) ----------
+      - name: Repobeats - spatelpatidar
+        uses: spatelpatidar/repobeats@v0.2.0
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: spatelpatidar
+          filename: repobeats-cards/repobeats.spatelpatidar.svg
+          output_action: none
+
+      - name: Repobeats - respondo
+        uses: spatelpatidar/repobeats@v0.2.0
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: respondo
+          filename: repobeats-cards/repobeats.respondo.svg
+          output_action: none
+
+      - name: Repobeats - respondo-graphql
+        uses: spatelpatidar/repobeats@v0.2.0
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: respondo-graphql
+          filename: repobeats-cards/repobeats.respondo-graphql.svg
+          output_action: none
+
+      - name: Repobeats - respondo-grpc
+        uses: spatelpatidar/repobeats@v0.2.0
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: respondo-grpc
+          filename: repobeats-cards/repobeats.respondo-grpc.svg
+          output_action: none
+
+      - name: Repobeats - respondo-grpc (dark, 90 days)
+        uses: spatelpatidar/repobeats@v0.2.0
+        continue-on-error: true
+        timeout-minutes: 10
+        with:
+          token: ${{ secrets.METRICS_TOKEN }}
+          user: spatelpatidar
+          repo: respondo-grpc
+          filename: repobeats-cards/repobeats.respondo-grpc.dark90.svg
+          theme: dark
+          period: 90
+          output_action: none
+
       # ================= PATCHED FORK (prebuilt image) =================
       # Download the image built by the fork's "Build metrics image" workflow
       # and give it the name the action looks for, so no build happens here.
@@ -287,6 +345,12 @@ jobs:
           cp -r profile-3d-contrib output_assets/
           # Metrics assets (rendered by lowlighter/metrics)
           cp /metrics_renders/*.svg output_assets/metrics/
+          # Repobeats cards (written to the workspace by spatelpatidar/repobeats)
+          if ls repobeats-cards/*.svg >/dev/null 2>&1; then
+            cp repobeats-cards/*.svg output_assets/metrics/
+          else
+            echo "No Repobeats cards were generated"
+          fi
           ls -R output_assets
 
       # ---------- Preview page (NEW) ----------
